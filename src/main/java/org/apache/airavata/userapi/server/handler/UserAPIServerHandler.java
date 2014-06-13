@@ -21,5 +21,61 @@
 
 package org.apache.airavata.userapi.server.handler;
 
-public class UserAPIServerHandler{
+import org.apache.airavata.userapi.UserAPI;
+import org.apache.airavata.userapi.error.AuthenticationException;
+import org.apache.airavata.userapi.error.AuthorizationException;
+import org.apache.airavata.userapi.error.InvalidRequestException;
+import org.apache.airavata.userapi.error.UserAPISystemException;
+import org.apache.thrift.TException;
+
+public class UserAPIServerHandler implements UserAPI.Iface{
+    @Override
+    public String getAPIVersion() throws InvalidRequestException, UserAPISystemException, TException {
+        return null;
+    }
+
+    @Override
+    public String adminLogin(String username, String password) throws InvalidRequestException, UserAPISystemException, AuthenticationException, TException {
+        return null;
+    }
+
+    @Override
+    public void adminLogout() throws InvalidRequestException, UserAPISystemException, AuthenticationException, TException {
+
+    }
+
+    @Override
+    public boolean checkUsernameExists(String username) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        return false;
+    }
+
+    @Override
+    public void createNewUser(String userName, String password) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+
+    }
+
+    @Override
+    public void removeUser(String userName) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+
+    }
+
+    @Override
+    public void updateUserPassword(String userName, String newPassword) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+
+    }
+
+    @Override
+    public void activateUser(String userName) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+
+    }
+
+    @Override
+    public void deactivateUser(String userName) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+
+    }
+
+    @Override
+    public void authenticateUser(String userName, String password) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+
+    }
 }
