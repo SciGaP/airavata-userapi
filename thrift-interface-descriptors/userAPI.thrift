@@ -55,7 +55,7 @@ service UserAPI {
   /** Query UserAPI to fetch the API version */
   string getAPIVersion()
         throws (1: userAPIErrors.InvalidRequestException ire,
-                2: userAPIErrors.UserAPISystemException use)
+                2: userAPIErrors.UserAPISystemException ase)
 
   /**
    * Login Admin
@@ -63,61 +63,68 @@ service UserAPI {
   */
   string adminLogin (1: required string username,
                      2: required string password)
-      throws (1: airavataErrors.InvalidRequestException ire,
-              2: airavataErrors.UserAPISystemException use,
-              3: airavataErrors.AuthenticationException ae)
+      throws (1: userAPIErrors.InvalidRequestException ire,
+              2: userAPIErrors.UserAPISystemException ase,
+              3: userAPIErrors.AuthenticationException are)
 
 /**
    * Logout Admin
    *
   */
-  void adminLogout ()
-      throws  (1: airavataErrors.InvalidRequestException ire,
-               2: airavataErrors.UserAPISystemException use)
+  void adminLogout (1: required string token)
+      throws  (1: userAPIErrors.InvalidRequestException ire,
+               2: userAPIErrors.UserAPISystemException ase)
 
 /**
    * Check username exists
    *
   */
-  bool checkUsernameExists (1: required string username)
-        throws (1: airavataErrors.InvalidRequestException ire,
-                2: airavataErrors.AuthorizationException ae,
-                3: airavataErrors.UserAPISystemException use)
+  bool checkUsernameExists (1: required string username,
+                            2: required string token)
+        throws (1: userAPIErrors.InvalidRequestException ire,
+                2: userAPIErrors.AuthorizationException are,
+                3: userAPIErrors.UserAPISystemException ase)
 
 /**
    * Add new user
    *
   */
-  void createNewUser (1: required string userName
-                      2: required string password)
-        throws (1: airavataErrors.InvalidRequestException ire,
-                2: airavataErrors.AuthorizationException ae,
-                3: airavataErrors.UserAPISystemException use)
+  void createNewUser (1: required string userName,
+                      2: required string password,
+                      3: required string token)
+        throws (1: userAPIErrors.InvalidRequestException ire,
+                2: userAPIErrors.AuthorizationException are,
+                3: userAPIErrors.UserAPISystemException ase)
 
   /**
      * Remove user
      *
     */
-  void removeUser (1: required string userName)
-          throws (1: airavataErrors.InvalidRequestException ire,
-                  2: airavataErrors.AuthorizationException ae,
-                  3: airavataErrors.UserAPISystemException use)
+  void removeUser (1: required string userName,
+                   2: required string token)
+          throws (1: userAPIErrors.InvalidRequestException ire,
+                  2: userAPIErrors.AuthorizationException are,
+                  3: userAPIErrors.UserAPISystemException ase)
   /**
     * Update user password
     *
   */
-  void updateUserPassword (1: required string userName, 2: required string newPassword)
-            throws (1: airavataErrors.InvalidRequestException ire,
-                    2: airavataErrors.AuthorizationException ae,
-                    3: airavataErrors.UserAPISystemException use)
+  void updateUserPassword (1: required string userName,
+                           2: required string newPassword,
+                           3: required string token)
+            throws (1: userAPIErrors.InvalidRequestException ire,
+                    2: userAPIErrors.AuthorizationException are,
+                    3: userAPIErrors.UserAPISystemException ase)
 
   /**
     * Authenticate user
     *
   */
-  void authenticateUser (1: required string userName, 2: required string password)
-            throws (1: airavataErrors.InvalidRequestException ire,
-                    2: airavataErrors.AuthorizationException ae,
-                    3: airavataErrors.UserAPISystemException use)
+  void authenticateUser (1: required string userName,
+                         2: required string password,
+                         3: required string token)
+            throws (1: userAPIErrors.InvalidRequestException ire,
+                    2: userAPIErrors.AuthorizationException are,
+                    3: userAPIErrors.UserAPISystemException ase)
 
 }

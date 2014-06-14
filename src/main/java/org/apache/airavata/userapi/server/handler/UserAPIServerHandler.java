@@ -72,7 +72,6 @@ public class UserAPIServerHandler implements UserAPI.Iface{
 
     @Override
     public void adminLogout() throws InvalidRequestException, UserAPISystemException, AuthenticationException, TException {
-
     }
 
     @Override
