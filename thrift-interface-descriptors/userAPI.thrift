@@ -128,4 +128,32 @@ service UserAPI {
                     2: userAPIErrors.AuthorizationException are,
                     3: userAPIErrors.UserAPISystemException ase)
 
+  /**
+    * Activate user
+    *
+  */
+  void activateUser (1: required string userName,
+                     2: required string token)
+            throws (1: userAPIErrors.InvalidRequestException ire,
+                    2: userAPIErrors.AuthorizationException are,
+                    3: userAPIErrors.UserAPISystemException ase)
+  /**
+    * Deactivate user
+    *
+  */
+  void deactivateUser (1: required string userName,
+                       2: required string token)
+            throws (1: userAPIErrors.InvalidRequestException ire,
+                    2: userAPIErrors.AuthorizationException are,
+                    3: userAPIErrors.UserAPISystemException ase)
+
+  /**
+    * Is activate user
+    *
+  */
+  bool isActivateUser (1: required string userName,
+                       2: required string token)
+            throws (1: userAPIErrors.InvalidRequestException ire,
+                    2: userAPIErrors.AuthorizationException are,
+                    3: userAPIErrors.UserAPISystemException ase)
 }

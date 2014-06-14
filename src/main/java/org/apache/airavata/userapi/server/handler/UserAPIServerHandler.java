@@ -29,7 +29,6 @@ import org.apache.airavata.userapi.error.InvalidRequestException;
 import org.apache.airavata.userapi.error.UserAPISystemException;
 import org.apache.airavata.userapi.server.utils.LoginAdminServiceClient;
 import org.apache.airavata.userapi.server.utils.UserStoreManagerServiceClient;
-import org.apache.axis2.AxisFault;
 import org.apache.thrift.TException;
 import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
 import org.wso2.carbon.authenticator.stub.LogoutAuthenticationExceptionException;
@@ -44,7 +43,7 @@ public class UserAPIServerHandler implements UserAPI.Iface{
     private LoginAdminServiceClient loginAdminServiceClient;
     private UserStoreManagerServiceClient userStoreManagerServiceClient;
 
-    public UserAPIServerHandler(String url) throws AxisFault {
+    public UserAPIServerHandler(String url) throws RemoteException, UserStoreExceptionException {
         this.backendUrl = url;
         this.loginAdminServiceClient = new LoginAdminServiceClient(backendUrl);
         this.userStoreManagerServiceClient = new UserStoreManagerServiceClient(backendUrl);
@@ -152,5 +151,36 @@ public class UserAPIServerHandler implements UserAPI.Iface{
             throw new UserAPISystemException();
         }
         return isAuthentic;
+    }
+
+    @Override
+    public void activateUser(String userName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        try {
+            userStoreManagerServiceClient.activateUser(userName, token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
+    }
+
+    @Override
+    public void deactivateUser(String userName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        try {
+            userStoreManagerServiceClient.deactivateUser(userName, token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
+    }
+
+    @Override
+    public boolean isActivateUser(String userName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        return false;
     }
 }

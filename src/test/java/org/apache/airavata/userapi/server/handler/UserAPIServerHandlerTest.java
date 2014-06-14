@@ -104,11 +104,32 @@ public class UserAPIServerHandlerTest extends TestCase {
     }
 
     public void testActivateUser() throws Exception {
-
+        testAdminLogin();
+        boolean exceptionThrown = false;
+        try{
+            userAPIServerHandler.activateUser("supun", token);
+        }catch (Exception ex){
+            exceptionThrown = true;
+        }
+        Assert.assertFalse(exceptionThrown);
     }
 
     public void testDeactivateUser() throws Exception {
+        testAdminLogin();
+        boolean exceptionThrown = false;
+        try{
+            userAPIServerHandler.deactivateUser("supun", token);
+        }catch (Exception ex){
+            exceptionThrown = true;
+        }
+        Assert.assertFalse(exceptionThrown);
+    }
 
+    public void testIsActivateUser() throws Exception {
+        testAdminLogin();
+        boolean activeUser = false;
+        activeUser = userAPIServerHandler.isActivateUser("supun", token);
+        Assert.assertTrue(activeUser);
     }
 
     public void testAuthenticateUser() throws Exception {
