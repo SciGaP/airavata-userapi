@@ -111,7 +111,8 @@ service UserAPI {
   */
   void updateUserPassword (1: required string userName,
                            2: required string newPassword,
-                           3: required string token)
+                           3: required string oldPassword,
+                           4: required string token)
             throws (1: userAPIErrors.InvalidRequestException ire,
                     2: userAPIErrors.AuthorizationException are,
                     3: userAPIErrors.UserAPISystemException ase)
