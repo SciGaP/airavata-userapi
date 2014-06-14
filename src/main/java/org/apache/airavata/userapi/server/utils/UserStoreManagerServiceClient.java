@@ -62,6 +62,11 @@ public class UserStoreManagerServiceClient {
         return isAuthentic;
     }
 
+    public void changeUserPassword(String username, String newPassword, String oldPassword, String token) throws RemoteException, UserStoreExceptionException {
+        authenticateStubFromCookie(token);
+        remoteUserStoreManagerServiceStub.updateCredential(username, newPassword, oldPassword);
+    }
+
     private void authenticateStubFromCookie(String token){
         ServiceClient serviceClient;
         Options option;

@@ -82,7 +82,7 @@ public class UserAPIServerHandlerTest extends TestCase {
         testAdminLogin();
         boolean exceptionThrown = false;
         try{
-            userAPIServerHandler.removeUser("test_user",token);
+            userAPIServerHandler.removeUser("test_user", token);
         }catch (Exception ex){
             exceptionThrown = true;
         }
@@ -91,7 +91,16 @@ public class UserAPIServerHandlerTest extends TestCase {
     }
 
     public void testUpdateUserPassword() throws Exception {
-
+        testAdminLogin();
+        testCreateNewUser();
+        boolean exceptionThrown = false;
+        try{
+            userAPIServerHandler.updateUserPassword("test_user", "abc456", "abc123", token);
+            testRemoveUser();
+        }catch (Exception ex){
+            exceptionThrown = true;
+        }
+        Assert.assertFalse(exceptionThrown);
     }
 
     public void testActivateUser() throws Exception {

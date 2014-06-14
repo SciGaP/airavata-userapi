@@ -127,8 +127,16 @@ public class UserAPIServerHandler implements UserAPI.Iface{
     }
 
     @Override
-    public void updateUserPassword(String userName, String newPassword, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-
+    public void updateUserPassword(String userName, String newPassword, String oldPassword, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        try {
+            userStoreManagerServiceClient.changeUserPassword(userName,newPassword,oldPassword,token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
     }
 
     @Override
