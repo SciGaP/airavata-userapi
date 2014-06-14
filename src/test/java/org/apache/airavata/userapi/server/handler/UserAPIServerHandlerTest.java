@@ -21,15 +21,28 @@
 
 package org.apache.airavata.userapi.server.handler;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class UserAPIServerHandlerTest extends TestCase {
-    public void testGetAPIVersion() throws Exception {
+    private UserAPIServerHandler userAPIServerHandler;
+
+    public void setUp() throws Exception {
+        super.setUp();
+        this.userAPIServerHandler = new UserAPIServerHandler("https://idp.scigap.org:7443");
+    }
+
+    public void tearDown() throws Exception {
 
     }
 
-    public void testAdminLogin() throws Exception {
+    public void testGetAPIVersion() throws Exception {
+        Assert.assertEquals("0.12.0",userAPIServerHandler.getAPIVersion());
+    }
 
+    public void testAdminLogin() throws Exception {
+        String temp = userAPIServerHandler.adminLogin("scigap_admin","sci9067@min");
+        Assert.assertNotNull(temp);
     }
 
     public void testAdminLogout() throws Exception {

@@ -109,7 +109,7 @@ public class UserAPIServer implements IServer{
     public void start() throws Exception {
         setStatus(ServerStatus.STARTING);
         UserAPI.Processor<UserAPI.Iface> mockUserAPIServer =
-                new UserAPI.Processor<UserAPI.Iface>(new UserAPIServerHandler());
+                new UserAPI.Processor<UserAPI.Iface>(new UserAPIServerHandler("https://idp.scigap.org:7443"));
         startUserAPIServer(mockUserAPIServer);
     }
 

@@ -22,21 +22,52 @@
 package org.apache.airavata.userapi.server.handler;
 
 import org.apache.airavata.userapi.UserAPI;
+import org.apache.airavata.userapi.UserAPIConstants;
 import org.apache.airavata.userapi.error.AuthenticationException;
 import org.apache.airavata.userapi.error.AuthorizationException;
 import org.apache.airavata.userapi.error.InvalidRequestException;
 import org.apache.airavata.userapi.error.UserAPISystemException;
+import org.apache.airavata.userapi.server.utils.LoginAdminServiceClient;
+import org.apache.axis2.AxisFault;
 import org.apache.thrift.TException;
+import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
+
+import java.rmi.RemoteException;
 
 public class UserAPIServerHandler implements UserAPI.Iface{
+
+    private String backendUrl;
+
+    private LoginAdminServiceClient loginAdminServiceClient;
+
+    public UserAPIServerHandler(String url) throws AxisFault {
+        this.backendUrl = url;
+        this.loginAdminServiceClient = new LoginAdminServiceClient(backendUrl);
+    }
+
     @Override
     public String getAPIVersion() throws InvalidRequestException, UserAPISystemException, TException {
-        return null;
+        return UserAPIConstants.USER_API_VERSION;
     }
 
     @Override
     public String adminLogin(String username, String password) throws InvalidRequestException, UserAPISystemException, AuthenticationException, TException {
-        return null;
+        if(username.isEmpty()|| password.isEmpty() || username.contains(" ")|| password.contains(" ")){
+            throw new InvalidRequestException();
+        }
+
+        String sessionCookie = null;
+        try {
+            sessionCookie = loginAdminServiceClient.authenticate(username,password);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (LoginAuthenticationExceptionException e) {
+            e.printStackTrace();
+            throw new AuthenticationException();
+        }
+
+        return sessionCookie;
     }
 
     @Override
