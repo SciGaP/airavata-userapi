@@ -120,7 +120,7 @@ service UserAPI {
     * Authenticate user
     *
   */
-  void authenticateUser (1: required string userName,
+  bool authenticateUser (1: required string userName,
                          2: required string password,
                          3: required string token)
             throws (1: userAPIErrors.InvalidRequestException ire,

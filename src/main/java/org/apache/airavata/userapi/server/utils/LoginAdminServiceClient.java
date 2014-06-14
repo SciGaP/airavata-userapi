@@ -22,6 +22,8 @@
 package org.apache.airavata.userapi.server.utils;
 
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.client.Options;
+import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ServiceContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.wso2.carbon.authenticator.stub.AuthenticationAdminStub;
@@ -55,8 +57,18 @@ public class LoginAdminServiceClient {
         return sessionCookie;
     }
 
-    public void logOut(String sessionCookie) throws RemoteException, LogoutAuthenticationExceptionException {
-        authenticationAdminStub._getServiceClient().getServiceContext().setProperty(HTTPConstants.COOKIE_STRING,sessionCookie);
+    public void logOut(String token) throws RemoteException, LogoutAuthenticationExceptionException {
+        authenticateStubFromCookie(token);
         authenticationAdminStub.logout();
+    }
+
+    private void authenticateStubFromCookie(String token){
+        ServiceClient serviceClient;
+        Options option;
+
+        serviceClient = authenticationAdminStub._getServiceClient();
+        option = serviceClient.getOptions();
+        option.setManageSession(true);
+        option.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING, token);
     }
 }

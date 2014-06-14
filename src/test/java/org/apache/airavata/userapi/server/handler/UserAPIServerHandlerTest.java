@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 
 public class UserAPIServerHandlerTest extends TestCase {
     private UserAPIServerHandler userAPIServerHandler;
+    private String token;
 
     public void setUp() throws Exception {
         super.setUp();
@@ -43,22 +44,50 @@ public class UserAPIServerHandlerTest extends TestCase {
     public void testAdminLogin() throws Exception {
         String temp = userAPIServerHandler.adminLogin("scigap_admin","sci9067@min");
         Assert.assertNotNull(temp);
+        this.token = temp;
     }
 
-    public void testAdminLogout() throws Exception {
 
+    public void testAdminLogout() throws Exception {
+        testAdminLogin();
+        boolean exceptionThrown = false;
+        try{
+            userAPIServerHandler.adminLogout(token);
+        }catch (Exception ex){
+            exceptionThrown = true;
+        }
+
+        Assert.assertFalse(exceptionThrown);
     }
 
     public void testCheckUsernameExists() throws Exception {
-
+        testAdminLogin();
+        boolean temp = userAPIServerHandler.checkUsernameExists("scigap_admin", token);
+        Assert.assertTrue(temp);
     }
 
     public void testCreateNewUser() throws Exception {
+        testAdminLogin();
+        boolean exceptionThrown = false;
+        try{
+            userAPIServerHandler.createNewUser("test_user","abc123",token);
+        }catch (Exception ex){
+            exceptionThrown = true;
+        }
 
+        Assert.assertFalse(exceptionThrown);
     }
 
     public void testRemoveUser() throws Exception {
+        testAdminLogin();
+        boolean exceptionThrown = false;
+        try{
+            userAPIServerHandler.removeUser("test_user",token);
+        }catch (Exception ex){
+            exceptionThrown = true;
+        }
 
+        Assert.assertFalse(exceptionThrown);
     }
 
     public void testUpdateUserPassword() throws Exception {
@@ -74,6 +103,8 @@ public class UserAPIServerHandlerTest extends TestCase {
     }
 
     public void testAuthenticateUser() throws Exception {
-
+        testAdminLogin();
+        boolean isAuthentic = userAPIServerHandler.authenticateUser("scigap_admin","sci9067@min",token);
+        Assert.assertTrue(isAuthentic);
     }
 }

@@ -28,9 +28,12 @@ import org.apache.airavata.userapi.error.AuthorizationException;
 import org.apache.airavata.userapi.error.InvalidRequestException;
 import org.apache.airavata.userapi.error.UserAPISystemException;
 import org.apache.airavata.userapi.server.utils.LoginAdminServiceClient;
+import org.apache.airavata.userapi.server.utils.UserStoreManagerServiceClient;
 import org.apache.axis2.AxisFault;
 import org.apache.thrift.TException;
 import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
+import org.wso2.carbon.authenticator.stub.LogoutAuthenticationExceptionException;
+import org.wso2.carbon.um.ws.api.stub.UserStoreExceptionException;
 
 import java.rmi.RemoteException;
 
@@ -39,10 +42,12 @@ public class UserAPIServerHandler implements UserAPI.Iface{
     private String backendUrl;
 
     private LoginAdminServiceClient loginAdminServiceClient;
+    private UserStoreManagerServiceClient userStoreManagerServiceClient;
 
     public UserAPIServerHandler(String url) throws AxisFault {
         this.backendUrl = url;
         this.loginAdminServiceClient = new LoginAdminServiceClient(backendUrl);
+        this.userStoreManagerServiceClient = new UserStoreManagerServiceClient(backendUrl);
     }
 
     @Override
@@ -52,13 +57,9 @@ public class UserAPIServerHandler implements UserAPI.Iface{
 
     @Override
     public String adminLogin(String username, String password) throws InvalidRequestException, UserAPISystemException, AuthenticationException, TException {
-        if(username.isEmpty()|| password.isEmpty() || username.contains(" ")|| password.contains(" ")){
-            throw new InvalidRequestException();
-        }
-
-        String sessionCookie = null;
+        String token = null;
         try {
-            sessionCookie = loginAdminServiceClient.authenticate(username,password);
+            token = loginAdminServiceClient.authenticate(username,password);
         } catch (RemoteException e) {
             e.printStackTrace();
             throw new UserAPISystemException();
@@ -67,45 +68,81 @@ public class UserAPIServerHandler implements UserAPI.Iface{
             throw new AuthenticationException();
         }
 
-        return sessionCookie;
+        return token;
     }
 
     @Override
-    public void adminLogout() throws InvalidRequestException, UserAPISystemException, AuthenticationException, TException {
+    public void adminLogout(String token) throws InvalidRequestException, UserAPISystemException, TException {
+        try {
+            loginAdminServiceClient.logOut(token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (LogoutAuthenticationExceptionException e) {
+            e.printStackTrace();
+            throw new InvalidRequestException();
+        }
     }
 
     @Override
-    public boolean checkUsernameExists(String username) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-        return false;
+    public boolean checkUsernameExists(String username, String token) throws InvalidRequestException,
+            AuthorizationException, UserAPISystemException, TException {
+        boolean isExistingUser = false;
+        try {
+            isExistingUser = userStoreManagerServiceClient.isExistingUser(username,token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
+        return isExistingUser;
     }
 
     @Override
-    public void createNewUser(String userName, String password) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+    public void createNewUser(String userName, String password, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        try {
+            userStoreManagerServiceClient.createNewUser(userName,password,token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
+    }
+
+    @Override
+    public void removeUser(String userName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        try {
+            userStoreManagerServiceClient.removeUser(userName,token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
+    }
+
+    @Override
+    public void updateUserPassword(String userName, String newPassword, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
 
     }
 
     @Override
-    public void removeUser(String userName) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-
-    }
-
-    @Override
-    public void updateUserPassword(String userName, String newPassword) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-
-    }
-
-    @Override
-    public void activateUser(String userName) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-
-    }
-
-    @Override
-    public void deactivateUser(String userName) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-
-    }
-
-    @Override
-    public void authenticateUser(String userName, String password) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-
+    public boolean authenticateUser(String userName, String password, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        boolean isAuthentic = false;
+        try {
+            isAuthentic = userStoreManagerServiceClient.authenticateUser(userName,password,token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
+        return isAuthentic;
     }
 }
