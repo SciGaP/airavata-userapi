@@ -180,7 +180,15 @@ public class UserAPIServerHandler implements UserAPI.Iface{
     }
 
     @Override
-    public boolean isActivateUser(String userName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-        return false;
+    public boolean isActiveUser(String userName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        try{
+            return userStoreManagerServiceClient.isActiveUser(userName, token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
     }
 }

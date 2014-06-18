@@ -128,7 +128,7 @@ public class UserAPIServerHandlerTest extends TestCase {
     public void testIsActivateUser() throws Exception {
         testAdminLogin();
         boolean activeUser = false;
-        activeUser = userAPIServerHandler.isActivateUser("supun", token);
+        activeUser = userAPIServerHandler.isActiveUser("supun", token);
         Assert.assertTrue(activeUser);
     }
 

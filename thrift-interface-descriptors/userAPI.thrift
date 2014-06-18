@@ -151,7 +151,7 @@ service UserAPI {
     * Is activate user
     *
   */
-  bool isActivateUser (1: required string userName,
+  bool isActiveUser (1: required string userName,
                        2: required string token)
             throws (1: userAPIErrors.InvalidRequestException ire,
                     2: userAPIErrors.AuthorizationException are,
