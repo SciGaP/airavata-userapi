@@ -52,7 +52,7 @@ public class UserAPIServer implements IServer{
 
     public void startUserAPIServer(UserAPI.Processor<UserAPI.Iface> mockUserAPIServer) throws Exception {
         try {
-            final int serverPort = 8939; //Integer.parseInt(ServerSettings.getSetting(Constants.API_SERVER_PORT,"8930"));
+            final int serverPort = 8932; //Integer.parseInt(ServerSettings.getSetting(Constants.API_SERVER_PORT,"8930"));
             final String serverHost = "localhost"; //ServerSettings.getSetting(Constants.API_SERVER_HOST, null);
 
             TServerTransport serverTransport;
