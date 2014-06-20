@@ -1,0 +1,56 @@
+<?php
+namespace Airavata\UserAPI\Client\Samples;
+
+$GLOBALS['THRIFT_ROOT'] = '../lib/Thrift/';
+require_once $GLOBALS['THRIFT_ROOT'] . 'Transport/TTransport.php';
+require_once $GLOBALS['THRIFT_ROOT'] . 'Transport/TSocket.php';
+require_once $GLOBALS['THRIFT_ROOT'] . 'Protocol/TProtocol.php';
+require_once $GLOBALS['THRIFT_ROOT'] . 'Protocol/TBinaryProtocol.php';
+require_once $GLOBALS['THRIFT_ROOT'] . 'Exception/TException.php';
+require_once $GLOBALS['THRIFT_ROOT'] . 'Exception/TApplicationException.php';
+require_once $GLOBALS['THRIFT_ROOT'] . 'Exception/TProtocolException.php';
+require_once $GLOBALS['THRIFT_ROOT'] . 'Base/TBase.php';
+require_once $GLOBALS['THRIFT_ROOT'] . 'Type/TType.php';
+require_once $GLOBALS['THRIFT_ROOT'] . 'Type/TMessageType.php';
+require_once $GLOBALS['THRIFT_ROOT'] . 'Factory/TStringFuncFactory.php';
+require_once $GLOBALS['THRIFT_ROOT'] . 'StringFunc/TStringFunc.php';
+require_once $GLOBALS['THRIFT_ROOT'] . 'StringFunc/Core.php';
+
+$GLOBALS['AIRAVATA_ROOT'] = '../lib/Airavata/';
+require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/UserAPI.php';
+require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/UserAPI.php';
+
+use Airavata\UserAPI\Error\UserAPIClientException;
+use Airavata\UserAPI\Error\UserAPISystemException;
+use Airavata\UserAPI\Error\InvalidRequestException;
+use Airavata\UserAPI\Client\AiravataClientFactory;
+use Thrift\Protocol\TBinaryProtocol;
+use Thrift\Transport\TBufferedTransport;
+use Thrift\Transport\TSocket;
+use Airavata\UserAPI\UserAPIClient;
+
+$userapiconfig = parse_ini_file("userapi-client-properties.ini");
+
+$transport = new TSocket($userapiconfig['USERAPI_SERVER'], $userapiconfig['USERAPI_PORT']);
+$transport->setRecvTimeout($userapiconfig['USERAPI_TIMEOUT']);
+
+$protocol = new TBinaryProtocol($transport);
+$transport->open();
+$userapiclient = new UserAPIClient($protocol);
+
+try
+{
+    $version = $userapiclient->getAPIVersion();
+}
+catch (TException $texp)
+{
+    print 'Exception: ' . $texp->getMessage()."\n";
+}
+
+
+echo 'Airavata UserAPI server version is ' . $version;
+
+
+$transport->close();
+
+?>
