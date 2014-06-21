@@ -23,6 +23,6 @@ package org.apache.airavata.userapi.common.utils;
 
 public class Constants {
     public static final String USER_API_SERVER_PORT = "USER_API_SERVER_PORT";
-    public static final String USER_API_SERVER_HOST = "USER_API_SERVER_HOSE";
+    public static final String USER_API_SERVER_HOST = "USER_API_SERVER_HOST";
     public static final String USER_API_SERVER_MIN_THREADS = "USER_API_SERVER_MIN_THREADS";
 }
