@@ -108,39 +108,86 @@ interface UserAPIIf {
    */
   public function authenticateUser($userName, $password, $token);
   /**
-   * Activate user
+   * Add user to a role
    * 
    * 
    * @param string $userName
+   * @param string $roleName
    * @param string $token
    * @throws \Airavata\UserAPI\Error\InvalidRequestException
    * @throws \Airavata\UserAPI\Error\AuthorizationException
    * @throws \Airavata\UserAPI\Error\UserAPISystemException
    */
-  public function activateUser($userName, $token);
+  public function addUserToRole($userName, $roleName, $token);
   /**
-   * Deactivate user
+   * Remove user from role
    * 
    * 
    * @param string $userName
+   * @param string $roleName
    * @param string $token
    * @throws \Airavata\UserAPI\Error\InvalidRequestException
    * @throws \Airavata\UserAPI\Error\AuthorizationException
    * @throws \Airavata\UserAPI\Error\UserAPISystemException
    */
-  public function deactivateUser($userName, $token);
+  public function removeUserFromRole($userName, $roleName, $token);
   /**
-   * Is activate user
+   * Get user list of a particular role
    * 
    * 
-   * @param string $userName
+   * @param string $roleName
    * @param string $token
-   * @return bool
+   * @return string[]
    * @throws \Airavata\UserAPI\Error\InvalidRequestException
    * @throws \Airavata\UserAPI\Error\AuthorizationException
    * @throws \Airavata\UserAPI\Error\UserAPISystemException
    */
-  public function isActiveUser($userName, $token);
+  public function getUserListOfRole($roleName, $token);
+  /**
+   * Get role list of a particular user
+   * 
+   * 
+   * @param string $username
+   * @param string $token
+   * @return string[]
+   * @throws \Airavata\UserAPI\Error\InvalidRequestException
+   * @throws \Airavata\UserAPI\Error\AuthorizationException
+   * @throws \Airavata\UserAPI\Error\UserAPISystemException
+   */
+  public function getRoleListOfUser($username, $token);
+  /**
+   * Get user list of a particular role
+   * 
+   * 
+   * @param string $roleName
+   * @param string $token
+   * @throws \Airavata\UserAPI\Error\InvalidRequestException
+   * @throws \Airavata\UserAPI\Error\AuthorizationException
+   * @throws \Airavata\UserAPI\Error\UserAPISystemException
+   */
+  public function addRole($roleName, $token);
+  /**
+   * Get user list of a particular role
+   * 
+   * 
+   * @param string $roleName
+   * @param string $token
+   * @throws \Airavata\UserAPI\Error\InvalidRequestException
+   * @throws \Airavata\UserAPI\Error\AuthorizationException
+   * @throws \Airavata\UserAPI\Error\UserAPISystemException
+   */
+  public function removeRole($roleName, $token);
+  /**
+   * Get user list of a particular role
+   * 
+   * 
+   * @param string $token
+   * @return string[]
+   * @throws \Airavata\UserAPI\Error\InvalidRequestException
+   * @throws \Airavata\UserAPI\Error\AuthorizationException
+   * @throws \Airavata\UserAPI\Error\UserAPISystemException
+   */
+  public function getRoleNames($token);
 }
 
 class UserAPIClient implements \Airavata\UserAPI\UserAPIIf {
@@ -625,35 +672,36 @@ class UserAPIClient implements \Airavata\UserAPI\UserAPIIf {
     throw new \Exception("authenticateUser failed: unknown result");
   }
 
-  public function activateUser($userName, $token)
+  public function addUserToRole($userName, $roleName, $token)
   {
-    $this->send_activateUser($userName, $token);
-    $this->recv_activateUser();
+    $this->send_addUserToRole($userName, $roleName, $token);
+    $this->recv_addUserToRole();
   }
 
-  public function send_activateUser($userName, $token)
+  public function send_addUserToRole($userName, $roleName, $token)
   {
-    $args = new \Airavata\UserAPI\UserAPI_activateUser_args();
+    $args = new \Airavata\UserAPI\UserAPI_addUserToRole_args();
     $args->userName = $userName;
+    $args->roleName = $roleName;
     $args->token = $token;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($this->output_, 'activateUser', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+      thrift_protocol_write_binary($this->output_, 'addUserToRole', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
     else
     {
-      $this->output_->writeMessageBegin('activateUser', TMessageType::CALL, $this->seqid_);
+      $this->output_->writeMessageBegin('addUserToRole', TMessageType::CALL, $this->seqid_);
       $args->write($this->output_);
       $this->output_->writeMessageEnd();
       $this->output_->getTransport()->flush();
     }
   }
 
-  public function recv_activateUser()
+  public function recv_addUserToRole()
   {
     $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\Airavata\UserAPI\UserAPI_activateUser_result', $this->input_->isStrictRead());
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\Airavata\UserAPI\UserAPI_addUserToRole_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -667,7 +715,7 @@ class UserAPIClient implements \Airavata\UserAPI\UserAPIIf {
         $this->input_->readMessageEnd();
         throw $x;
       }
-      $result = new \Airavata\UserAPI\UserAPI_activateUser_result();
+      $result = new \Airavata\UserAPI\UserAPI_addUserToRole_result();
       $result->read($this->input_);
       $this->input_->readMessageEnd();
     }
@@ -683,35 +731,36 @@ class UserAPIClient implements \Airavata\UserAPI\UserAPIIf {
     return;
   }
 
-  public function deactivateUser($userName, $token)
+  public function removeUserFromRole($userName, $roleName, $token)
   {
-    $this->send_deactivateUser($userName, $token);
-    $this->recv_deactivateUser();
+    $this->send_removeUserFromRole($userName, $roleName, $token);
+    $this->recv_removeUserFromRole();
   }
 
-  public function send_deactivateUser($userName, $token)
+  public function send_removeUserFromRole($userName, $roleName, $token)
   {
-    $args = new \Airavata\UserAPI\UserAPI_deactivateUser_args();
+    $args = new \Airavata\UserAPI\UserAPI_removeUserFromRole_args();
     $args->userName = $userName;
+    $args->roleName = $roleName;
     $args->token = $token;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($this->output_, 'deactivateUser', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+      thrift_protocol_write_binary($this->output_, 'removeUserFromRole', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
     else
     {
-      $this->output_->writeMessageBegin('deactivateUser', TMessageType::CALL, $this->seqid_);
+      $this->output_->writeMessageBegin('removeUserFromRole', TMessageType::CALL, $this->seqid_);
       $args->write($this->output_);
       $this->output_->writeMessageEnd();
       $this->output_->getTransport()->flush();
     }
   }
 
-  public function recv_deactivateUser()
+  public function recv_removeUserFromRole()
   {
     $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\Airavata\UserAPI\UserAPI_deactivateUser_result', $this->input_->isStrictRead());
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\Airavata\UserAPI\UserAPI_removeUserFromRole_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -725,7 +774,7 @@ class UserAPIClient implements \Airavata\UserAPI\UserAPIIf {
         $this->input_->readMessageEnd();
         throw $x;
       }
-      $result = new \Airavata\UserAPI\UserAPI_deactivateUser_result();
+      $result = new \Airavata\UserAPI\UserAPI_removeUserFromRole_result();
       $result->read($this->input_);
       $this->input_->readMessageEnd();
     }
@@ -741,35 +790,35 @@ class UserAPIClient implements \Airavata\UserAPI\UserAPIIf {
     return;
   }
 
-  public function isActiveUser($userName, $token)
+  public function getUserListOfRole($roleName, $token)
   {
-    $this->send_isActiveUser($userName, $token);
-    return $this->recv_isActiveUser();
+    $this->send_getUserListOfRole($roleName, $token);
+    return $this->recv_getUserListOfRole();
   }
 
-  public function send_isActiveUser($userName, $token)
+  public function send_getUserListOfRole($roleName, $token)
   {
-    $args = new \Airavata\UserAPI\UserAPI_isActiveUser_args();
-    $args->userName = $userName;
+    $args = new \Airavata\UserAPI\UserAPI_getUserListOfRole_args();
+    $args->roleName = $roleName;
     $args->token = $token;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($this->output_, 'isActiveUser', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+      thrift_protocol_write_binary($this->output_, 'getUserListOfRole', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
     else
     {
-      $this->output_->writeMessageBegin('isActiveUser', TMessageType::CALL, $this->seqid_);
+      $this->output_->writeMessageBegin('getUserListOfRole', TMessageType::CALL, $this->seqid_);
       $args->write($this->output_);
       $this->output_->writeMessageEnd();
       $this->output_->getTransport()->flush();
     }
   }
 
-  public function recv_isActiveUser()
+  public function recv_getUserListOfRole()
   {
     $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\Airavata\UserAPI\UserAPI_isActiveUser_result', $this->input_->isStrictRead());
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\Airavata\UserAPI\UserAPI_getUserListOfRole_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -783,7 +832,7 @@ class UserAPIClient implements \Airavata\UserAPI\UserAPIIf {
         $this->input_->readMessageEnd();
         throw $x;
       }
-      $result = new \Airavata\UserAPI\UserAPI_isActiveUser_result();
+      $result = new \Airavata\UserAPI\UserAPI_getUserListOfRole_result();
       $result->read($this->input_);
       $this->input_->readMessageEnd();
     }
@@ -799,7 +848,244 @@ class UserAPIClient implements \Airavata\UserAPI\UserAPIIf {
     if ($result->ase !== null) {
       throw $result->ase;
     }
-    throw new \Exception("isActiveUser failed: unknown result");
+    throw new \Exception("getUserListOfRole failed: unknown result");
+  }
+
+  public function getRoleListOfUser($username, $token)
+  {
+    $this->send_getRoleListOfUser($username, $token);
+    return $this->recv_getRoleListOfUser();
+  }
+
+  public function send_getRoleListOfUser($username, $token)
+  {
+    $args = new \Airavata\UserAPI\UserAPI_getRoleListOfUser_args();
+    $args->username = $username;
+    $args->token = $token;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'getRoleListOfUser', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('getRoleListOfUser', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_getRoleListOfUser()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\Airavata\UserAPI\UserAPI_getRoleListOfUser_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \Airavata\UserAPI\UserAPI_getRoleListOfUser_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->success !== null) {
+      return $result->success;
+    }
+    if ($result->ire !== null) {
+      throw $result->ire;
+    }
+    if ($result->are !== null) {
+      throw $result->are;
+    }
+    if ($result->ase !== null) {
+      throw $result->ase;
+    }
+    throw new \Exception("getRoleListOfUser failed: unknown result");
+  }
+
+  public function addRole($roleName, $token)
+  {
+    $this->send_addRole($roleName, $token);
+    $this->recv_addRole();
+  }
+
+  public function send_addRole($roleName, $token)
+  {
+    $args = new \Airavata\UserAPI\UserAPI_addRole_args();
+    $args->roleName = $roleName;
+    $args->token = $token;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'addRole', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('addRole', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_addRole()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\Airavata\UserAPI\UserAPI_addRole_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \Airavata\UserAPI\UserAPI_addRole_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->ire !== null) {
+      throw $result->ire;
+    }
+    if ($result->are !== null) {
+      throw $result->are;
+    }
+    if ($result->ase !== null) {
+      throw $result->ase;
+    }
+    return;
+  }
+
+  public function removeRole($roleName, $token)
+  {
+    $this->send_removeRole($roleName, $token);
+    $this->recv_removeRole();
+  }
+
+  public function send_removeRole($roleName, $token)
+  {
+    $args = new \Airavata\UserAPI\UserAPI_removeRole_args();
+    $args->roleName = $roleName;
+    $args->token = $token;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'removeRole', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('removeRole', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_removeRole()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\Airavata\UserAPI\UserAPI_removeRole_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \Airavata\UserAPI\UserAPI_removeRole_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->ire !== null) {
+      throw $result->ire;
+    }
+    if ($result->are !== null) {
+      throw $result->are;
+    }
+    if ($result->ase !== null) {
+      throw $result->ase;
+    }
+    return;
+  }
+
+  public function getRoleNames($token)
+  {
+    $this->send_getRoleNames($token);
+    return $this->recv_getRoleNames();
+  }
+
+  public function send_getRoleNames($token)
+  {
+    $args = new \Airavata\UserAPI\UserAPI_getRoleNames_args();
+    $args->token = $token;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'getRoleNames', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('getRoleNames', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_getRoleNames()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\Airavata\UserAPI\UserAPI_getRoleNames_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \Airavata\UserAPI\UserAPI_getRoleNames_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->success !== null) {
+      return $result->success;
+    }
+    if ($result->ire !== null) {
+      throw $result->ire;
+    }
+    if ($result->are !== null) {
+      throw $result->are;
+    }
+    if ($result->ase !== null) {
+      throw $result->ase;
+    }
+    throw new \Exception("getRoleNames failed: unknown result");
   }
 
 }
@@ -2669,13 +2955,17 @@ class UserAPI_authenticateUser_result {
 
 }
 
-class UserAPI_activateUser_args {
+class UserAPI_addUserToRole_args {
   static $_TSPEC;
 
   /**
    * @var string
    */
   public $userName = null;
+  /**
+   * @var string
+   */
+  public $roleName = null;
   /**
    * @var string
    */
@@ -2689,6 +2979,10 @@ class UserAPI_activateUser_args {
           'type' => TType::STRING,
           ),
         2 => array(
+          'var' => 'roleName',
+          'type' => TType::STRING,
+          ),
+        3 => array(
           'var' => 'token',
           'type' => TType::STRING,
           ),
@@ -2698,6 +2992,9 @@ class UserAPI_activateUser_args {
       if (isset($vals['userName'])) {
         $this->userName = $vals['userName'];
       }
+      if (isset($vals['roleName'])) {
+        $this->roleName = $vals['roleName'];
+      }
       if (isset($vals['token'])) {
         $this->token = $vals['token'];
       }
@@ -2705,7 +3002,7 @@ class UserAPI_activateUser_args {
   }
 
   public function getName() {
-    return 'UserAPI_activateUser_args';
+    return 'UserAPI_addUserToRole_args';
   }
 
   public function read($input)
@@ -2732,6 +3029,13 @@ class UserAPI_activateUser_args {
           break;
         case 2:
           if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->roleName);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->token);
           } else {
             $xfer += $input->skip($ftype);
@@ -2749,14 +3053,19 @@ class UserAPI_activateUser_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('UserAPI_activateUser_args');
+    $xfer += $output->writeStructBegin('UserAPI_addUserToRole_args');
     if ($this->userName !== null) {
       $xfer += $output->writeFieldBegin('userName', TType::STRING, 1);
       $xfer += $output->writeString($this->userName);
       $xfer += $output->writeFieldEnd();
     }
+    if ($this->roleName !== null) {
+      $xfer += $output->writeFieldBegin('roleName', TType::STRING, 2);
+      $xfer += $output->writeString($this->roleName);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->token !== null) {
-      $xfer += $output->writeFieldBegin('token', TType::STRING, 2);
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 3);
       $xfer += $output->writeString($this->token);
       $xfer += $output->writeFieldEnd();
     }
@@ -2767,7 +3076,7 @@ class UserAPI_activateUser_args {
 
 }
 
-class UserAPI_activateUser_result {
+class UserAPI_addUserToRole_result {
   static $_TSPEC;
 
   /**
@@ -2817,7 +3126,7 @@ class UserAPI_activateUser_result {
   }
 
   public function getName() {
-    return 'UserAPI_activateUser_result';
+    return 'UserAPI_addUserToRole_result';
   }
 
   public function read($input)
@@ -2871,7 +3180,7 @@ class UserAPI_activateUser_result {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('UserAPI_activateUser_result');
+    $xfer += $output->writeStructBegin('UserAPI_addUserToRole_result');
     if ($this->ire !== null) {
       $xfer += $output->writeFieldBegin('ire', TType::STRUCT, 1);
       $xfer += $this->ire->write($output);
@@ -2894,13 +3203,17 @@ class UserAPI_activateUser_result {
 
 }
 
-class UserAPI_deactivateUser_args {
+class UserAPI_removeUserFromRole_args {
   static $_TSPEC;
 
   /**
    * @var string
    */
   public $userName = null;
+  /**
+   * @var string
+   */
+  public $roleName = null;
   /**
    * @var string
    */
@@ -2914,6 +3227,10 @@ class UserAPI_deactivateUser_args {
           'type' => TType::STRING,
           ),
         2 => array(
+          'var' => 'roleName',
+          'type' => TType::STRING,
+          ),
+        3 => array(
           'var' => 'token',
           'type' => TType::STRING,
           ),
@@ -2923,6 +3240,9 @@ class UserAPI_deactivateUser_args {
       if (isset($vals['userName'])) {
         $this->userName = $vals['userName'];
       }
+      if (isset($vals['roleName'])) {
+        $this->roleName = $vals['roleName'];
+      }
       if (isset($vals['token'])) {
         $this->token = $vals['token'];
       }
@@ -2930,7 +3250,7 @@ class UserAPI_deactivateUser_args {
   }
 
   public function getName() {
-    return 'UserAPI_deactivateUser_args';
+    return 'UserAPI_removeUserFromRole_args';
   }
 
   public function read($input)
@@ -2957,6 +3277,13 @@ class UserAPI_deactivateUser_args {
           break;
         case 2:
           if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->roleName);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->token);
           } else {
             $xfer += $input->skip($ftype);
@@ -2974,14 +3301,19 @@ class UserAPI_deactivateUser_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('UserAPI_deactivateUser_args');
+    $xfer += $output->writeStructBegin('UserAPI_removeUserFromRole_args');
     if ($this->userName !== null) {
       $xfer += $output->writeFieldBegin('userName', TType::STRING, 1);
       $xfer += $output->writeString($this->userName);
       $xfer += $output->writeFieldEnd();
     }
+    if ($this->roleName !== null) {
+      $xfer += $output->writeFieldBegin('roleName', TType::STRING, 2);
+      $xfer += $output->writeString($this->roleName);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->token !== null) {
-      $xfer += $output->writeFieldBegin('token', TType::STRING, 2);
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 3);
       $xfer += $output->writeString($this->token);
       $xfer += $output->writeFieldEnd();
     }
@@ -2992,7 +3324,7 @@ class UserAPI_deactivateUser_args {
 
 }
 
-class UserAPI_deactivateUser_result {
+class UserAPI_removeUserFromRole_result {
   static $_TSPEC;
 
   /**
@@ -3042,7 +3374,7 @@ class UserAPI_deactivateUser_result {
   }
 
   public function getName() {
-    return 'UserAPI_deactivateUser_result';
+    return 'UserAPI_removeUserFromRole_result';
   }
 
   public function read($input)
@@ -3096,7 +3428,7 @@ class UserAPI_deactivateUser_result {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('UserAPI_deactivateUser_result');
+    $xfer += $output->writeStructBegin('UserAPI_removeUserFromRole_result');
     if ($this->ire !== null) {
       $xfer += $output->writeFieldBegin('ire', TType::STRUCT, 1);
       $xfer += $this->ire->write($output);
@@ -3119,13 +3451,13 @@ class UserAPI_deactivateUser_result {
 
 }
 
-class UserAPI_isActiveUser_args {
+class UserAPI_getUserListOfRole_args {
   static $_TSPEC;
 
   /**
    * @var string
    */
-  public $userName = null;
+  public $roleName = null;
   /**
    * @var string
    */
@@ -3135,7 +3467,7 @@ class UserAPI_isActiveUser_args {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'userName',
+          'var' => 'roleName',
           'type' => TType::STRING,
           ),
         2 => array(
@@ -3145,8 +3477,8 @@ class UserAPI_isActiveUser_args {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['userName'])) {
-        $this->userName = $vals['userName'];
+      if (isset($vals['roleName'])) {
+        $this->roleName = $vals['roleName'];
       }
       if (isset($vals['token'])) {
         $this->token = $vals['token'];
@@ -3155,7 +3487,7 @@ class UserAPI_isActiveUser_args {
   }
 
   public function getName() {
-    return 'UserAPI_isActiveUser_args';
+    return 'UserAPI_getUserListOfRole_args';
   }
 
   public function read($input)
@@ -3175,7 +3507,7 @@ class UserAPI_isActiveUser_args {
       {
         case 1:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->userName);
+            $xfer += $input->readString($this->roleName);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -3199,10 +3531,10 @@ class UserAPI_isActiveUser_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('UserAPI_isActiveUser_args');
-    if ($this->userName !== null) {
-      $xfer += $output->writeFieldBegin('userName', TType::STRING, 1);
-      $xfer += $output->writeString($this->userName);
+    $xfer += $output->writeStructBegin('UserAPI_getUserListOfRole_args');
+    if ($this->roleName !== null) {
+      $xfer += $output->writeFieldBegin('roleName', TType::STRING, 1);
+      $xfer += $output->writeString($this->roleName);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->token !== null) {
@@ -3217,11 +3549,11 @@ class UserAPI_isActiveUser_args {
 
 }
 
-class UserAPI_isActiveUser_result {
+class UserAPI_getUserListOfRole_result {
   static $_TSPEC;
 
   /**
-   * @var bool
+   * @var string[]
    */
   public $success = null;
   /**
@@ -3242,7 +3574,11 @@ class UserAPI_isActiveUser_result {
       self::$_TSPEC = array(
         0 => array(
           'var' => 'success',
-          'type' => TType::BOOL,
+          'type' => TType::LST,
+          'etype' => TType::STRING,
+          'elem' => array(
+            'type' => TType::STRING,
+            ),
           ),
         1 => array(
           'var' => 'ire',
@@ -3278,7 +3614,7 @@ class UserAPI_isActiveUser_result {
   }
 
   public function getName() {
-    return 'UserAPI_isActiveUser_result';
+    return 'UserAPI_getUserListOfRole_result';
   }
 
   public function read($input)
@@ -3297,8 +3633,18 @@ class UserAPI_isActiveUser_result {
       switch ($fid)
       {
         case 0:
-          if ($ftype == TType::BOOL) {
-            $xfer += $input->readBool($this->success);
+          if ($ftype == TType::LST) {
+            $this->success = array();
+            $_size0 = 0;
+            $_etype3 = 0;
+            $xfer += $input->readListBegin($_etype3, $_size0);
+            for ($_i4 = 0; $_i4 < $_size0; ++$_i4)
+            {
+              $elem5 = null;
+              $xfer += $input->readString($elem5);
+              $this->success []= $elem5;
+            }
+            $xfer += $input->readListEnd();
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -3339,10 +3685,997 @@ class UserAPI_isActiveUser_result {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('UserAPI_isActiveUser_result');
+    $xfer += $output->writeStructBegin('UserAPI_getUserListOfRole_result');
     if ($this->success !== null) {
-      $xfer += $output->writeFieldBegin('success', TType::BOOL, 0);
-      $xfer += $output->writeBool($this->success);
+      if (!is_array($this->success)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('success', TType::LST, 0);
+      {
+        $output->writeListBegin(TType::STRING, count($this->success));
+        {
+          foreach ($this->success as $iter6)
+          {
+            $xfer += $output->writeString($iter6);
+          }
+        }
+        $output->writeListEnd();
+      }
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->ire !== null) {
+      $xfer += $output->writeFieldBegin('ire', TType::STRUCT, 1);
+      $xfer += $this->ire->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->are !== null) {
+      $xfer += $output->writeFieldBegin('are', TType::STRUCT, 2);
+      $xfer += $this->are->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->ase !== null) {
+      $xfer += $output->writeFieldBegin('ase', TType::STRUCT, 3);
+      $xfer += $this->ase->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAPI_getRoleListOfUser_args {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $username = null;
+  /**
+   * @var string
+   */
+  public $token = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'username',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'token',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['username'])) {
+        $this->username = $vals['username'];
+      }
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAPI_getRoleListOfUser_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->username);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAPI_getRoleListOfUser_args');
+    if ($this->username !== null) {
+      $xfer += $output->writeFieldBegin('username', TType::STRING, 1);
+      $xfer += $output->writeString($this->username);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 2);
+      $xfer += $output->writeString($this->token);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAPI_getRoleListOfUser_result {
+  static $_TSPEC;
+
+  /**
+   * @var string[]
+   */
+  public $success = null;
+  /**
+   * @var \Airavata\UserAPI\Error\InvalidRequestException
+   */
+  public $ire = null;
+  /**
+   * @var \Airavata\UserAPI\Error\AuthorizationException
+   */
+  public $are = null;
+  /**
+   * @var \Airavata\UserAPI\Error\UserAPISystemException
+   */
+  public $ase = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        0 => array(
+          'var' => 'success',
+          'type' => TType::LST,
+          'etype' => TType::STRING,
+          'elem' => array(
+            'type' => TType::STRING,
+            ),
+          ),
+        1 => array(
+          'var' => 'ire',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'are',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\AuthorizationException',
+          ),
+        3 => array(
+          'var' => 'ase',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\UserAPISystemException',
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['success'])) {
+        $this->success = $vals['success'];
+      }
+      if (isset($vals['ire'])) {
+        $this->ire = $vals['ire'];
+      }
+      if (isset($vals['are'])) {
+        $this->are = $vals['are'];
+      }
+      if (isset($vals['ase'])) {
+        $this->ase = $vals['ase'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAPI_getRoleListOfUser_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 0:
+          if ($ftype == TType::LST) {
+            $this->success = array();
+            $_size7 = 0;
+            $_etype10 = 0;
+            $xfer += $input->readListBegin($_etype10, $_size7);
+            for ($_i11 = 0; $_i11 < $_size7; ++$_i11)
+            {
+              $elem12 = null;
+              $xfer += $input->readString($elem12);
+              $this->success []= $elem12;
+            }
+            $xfer += $input->readListEnd();
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->ire = new \Airavata\UserAPI\Error\InvalidRequestException();
+            $xfer += $this->ire->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRUCT) {
+            $this->are = new \Airavata\UserAPI\Error\AuthorizationException();
+            $xfer += $this->are->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRUCT) {
+            $this->ase = new \Airavata\UserAPI\Error\UserAPISystemException();
+            $xfer += $this->ase->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAPI_getRoleListOfUser_result');
+    if ($this->success !== null) {
+      if (!is_array($this->success)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('success', TType::LST, 0);
+      {
+        $output->writeListBegin(TType::STRING, count($this->success));
+        {
+          foreach ($this->success as $iter13)
+          {
+            $xfer += $output->writeString($iter13);
+          }
+        }
+        $output->writeListEnd();
+      }
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->ire !== null) {
+      $xfer += $output->writeFieldBegin('ire', TType::STRUCT, 1);
+      $xfer += $this->ire->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->are !== null) {
+      $xfer += $output->writeFieldBegin('are', TType::STRUCT, 2);
+      $xfer += $this->are->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->ase !== null) {
+      $xfer += $output->writeFieldBegin('ase', TType::STRUCT, 3);
+      $xfer += $this->ase->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAPI_addRole_args {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $roleName = null;
+  /**
+   * @var string
+   */
+  public $token = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'roleName',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'token',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['roleName'])) {
+        $this->roleName = $vals['roleName'];
+      }
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAPI_addRole_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->roleName);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAPI_addRole_args');
+    if ($this->roleName !== null) {
+      $xfer += $output->writeFieldBegin('roleName', TType::STRING, 1);
+      $xfer += $output->writeString($this->roleName);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 2);
+      $xfer += $output->writeString($this->token);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAPI_addRole_result {
+  static $_TSPEC;
+
+  /**
+   * @var \Airavata\UserAPI\Error\InvalidRequestException
+   */
+  public $ire = null;
+  /**
+   * @var \Airavata\UserAPI\Error\AuthorizationException
+   */
+  public $are = null;
+  /**
+   * @var \Airavata\UserAPI\Error\UserAPISystemException
+   */
+  public $ase = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'ire',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'are',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\AuthorizationException',
+          ),
+        3 => array(
+          'var' => 'ase',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\UserAPISystemException',
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['ire'])) {
+        $this->ire = $vals['ire'];
+      }
+      if (isset($vals['are'])) {
+        $this->are = $vals['are'];
+      }
+      if (isset($vals['ase'])) {
+        $this->ase = $vals['ase'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAPI_addRole_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->ire = new \Airavata\UserAPI\Error\InvalidRequestException();
+            $xfer += $this->ire->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRUCT) {
+            $this->are = new \Airavata\UserAPI\Error\AuthorizationException();
+            $xfer += $this->are->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRUCT) {
+            $this->ase = new \Airavata\UserAPI\Error\UserAPISystemException();
+            $xfer += $this->ase->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAPI_addRole_result');
+    if ($this->ire !== null) {
+      $xfer += $output->writeFieldBegin('ire', TType::STRUCT, 1);
+      $xfer += $this->ire->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->are !== null) {
+      $xfer += $output->writeFieldBegin('are', TType::STRUCT, 2);
+      $xfer += $this->are->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->ase !== null) {
+      $xfer += $output->writeFieldBegin('ase', TType::STRUCT, 3);
+      $xfer += $this->ase->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAPI_removeRole_args {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $roleName = null;
+  /**
+   * @var string
+   */
+  public $token = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'roleName',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'token',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['roleName'])) {
+        $this->roleName = $vals['roleName'];
+      }
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAPI_removeRole_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->roleName);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAPI_removeRole_args');
+    if ($this->roleName !== null) {
+      $xfer += $output->writeFieldBegin('roleName', TType::STRING, 1);
+      $xfer += $output->writeString($this->roleName);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 2);
+      $xfer += $output->writeString($this->token);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAPI_removeRole_result {
+  static $_TSPEC;
+
+  /**
+   * @var \Airavata\UserAPI\Error\InvalidRequestException
+   */
+  public $ire = null;
+  /**
+   * @var \Airavata\UserAPI\Error\AuthorizationException
+   */
+  public $are = null;
+  /**
+   * @var \Airavata\UserAPI\Error\UserAPISystemException
+   */
+  public $ase = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'ire',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'are',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\AuthorizationException',
+          ),
+        3 => array(
+          'var' => 'ase',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\UserAPISystemException',
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['ire'])) {
+        $this->ire = $vals['ire'];
+      }
+      if (isset($vals['are'])) {
+        $this->are = $vals['are'];
+      }
+      if (isset($vals['ase'])) {
+        $this->ase = $vals['ase'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAPI_removeRole_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->ire = new \Airavata\UserAPI\Error\InvalidRequestException();
+            $xfer += $this->ire->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRUCT) {
+            $this->are = new \Airavata\UserAPI\Error\AuthorizationException();
+            $xfer += $this->are->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRUCT) {
+            $this->ase = new \Airavata\UserAPI\Error\UserAPISystemException();
+            $xfer += $this->ase->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAPI_removeRole_result');
+    if ($this->ire !== null) {
+      $xfer += $output->writeFieldBegin('ire', TType::STRUCT, 1);
+      $xfer += $this->ire->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->are !== null) {
+      $xfer += $output->writeFieldBegin('are', TType::STRUCT, 2);
+      $xfer += $this->are->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->ase !== null) {
+      $xfer += $output->writeFieldBegin('ase', TType::STRUCT, 3);
+      $xfer += $this->ase->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAPI_getRoleNames_args {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $token = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'token',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAPI_getRoleNames_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAPI_getRoleNames_args');
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
+      $xfer += $output->writeString($this->token);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAPI_getRoleNames_result {
+  static $_TSPEC;
+
+  /**
+   * @var string[]
+   */
+  public $success = null;
+  /**
+   * @var \Airavata\UserAPI\Error\InvalidRequestException
+   */
+  public $ire = null;
+  /**
+   * @var \Airavata\UserAPI\Error\AuthorizationException
+   */
+  public $are = null;
+  /**
+   * @var \Airavata\UserAPI\Error\UserAPISystemException
+   */
+  public $ase = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        0 => array(
+          'var' => 'success',
+          'type' => TType::LST,
+          'etype' => TType::STRING,
+          'elem' => array(
+            'type' => TType::STRING,
+            ),
+          ),
+        1 => array(
+          'var' => 'ire',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'are',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\AuthorizationException',
+          ),
+        3 => array(
+          'var' => 'ase',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\UserAPISystemException',
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['success'])) {
+        $this->success = $vals['success'];
+      }
+      if (isset($vals['ire'])) {
+        $this->ire = $vals['ire'];
+      }
+      if (isset($vals['are'])) {
+        $this->are = $vals['are'];
+      }
+      if (isset($vals['ase'])) {
+        $this->ase = $vals['ase'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAPI_getRoleNames_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 0:
+          if ($ftype == TType::LST) {
+            $this->success = array();
+            $_size14 = 0;
+            $_etype17 = 0;
+            $xfer += $input->readListBegin($_etype17, $_size14);
+            for ($_i18 = 0; $_i18 < $_size14; ++$_i18)
+            {
+              $elem19 = null;
+              $xfer += $input->readString($elem19);
+              $this->success []= $elem19;
+            }
+            $xfer += $input->readListEnd();
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->ire = new \Airavata\UserAPI\Error\InvalidRequestException();
+            $xfer += $this->ire->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRUCT) {
+            $this->are = new \Airavata\UserAPI\Error\AuthorizationException();
+            $xfer += $this->are->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRUCT) {
+            $this->ase = new \Airavata\UserAPI\Error\UserAPISystemException();
+            $xfer += $this->ase->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAPI_getRoleNames_result');
+    if ($this->success !== null) {
+      if (!is_array($this->success)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('success', TType::LST, 0);
+      {
+        $output->writeListBegin(TType::STRING, count($this->success));
+        {
+          foreach ($this->success as $iter20)
+          {
+            $xfer += $output->writeString($iter20);
+          }
+        }
+        $output->writeListEnd();
+      }
       $xfer += $output->writeFieldEnd();
     }
     if ($this->ire !== null) {
