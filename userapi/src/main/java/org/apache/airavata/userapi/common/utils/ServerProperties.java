@@ -67,6 +67,19 @@ public class ServerProperties {
     public String getProperty(String key, String defaultVal){
         String val = this.properties.getProperty(key);
 
+        if(key.equals(Constants.KEY_STORE_NAME)){
+            if(val.isEmpty()){val = defaultVal;}
+            URL resourceUrl = getClass().
+                    getResource("/security/" + val);
+            try {
+                Path resourcePath = Paths.get(resourceUrl.toURI());
+                return resourcePath.toString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+
+        }
+
         if(val.isEmpty() || val == ""){
             return defaultVal;
         }else{

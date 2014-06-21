@@ -22,7 +22,13 @@
 package org.apache.airavata.userapi.common.utils;
 
 public class Constants {
+
     public static final String USER_API_SERVER_PORT = "USER_API_SERVER_PORT";
     public static final String USER_API_SERVER_HOST = "USER_API_SERVER_HOST";
     public static final String USER_API_SERVER_MIN_THREADS = "USER_API_SERVER_MIN_THREADS";
+
+    public static final String KEY_STORE_NAME = "KEY_STORE_NAME";
+    public static final String KEY_STORE_PWD = "KEY_STORE_PWD";
+    public static final String KEY_STORE_TYPE = "KEY_STORE_TYPE";
+
 }
