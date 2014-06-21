@@ -129,30 +129,71 @@ service UserAPI {
                     3: userAPIErrors.UserAPISystemException ase)
 
   /**
-    * Activate user
+    * Add user to a role
     *
   */
-  void activateUser (1: required string userName,
-                     2: required string token)
+  void addUserToRole (1: required string userName,
+                      2: required string roleName,
+                      3: required string token)
             throws (1: userAPIErrors.InvalidRequestException ire,
                     2: userAPIErrors.AuthorizationException are,
                     3: userAPIErrors.UserAPISystemException ase)
   /**
-    * Deactivate user
+    * Remove user from role
     *
   */
-  void deactivateUser (1: required string userName,
-                       2: required string token)
+  void removeUserFromRole (1: required string userName,
+                           2: required string roleName,
+                           3: required string token)
             throws (1: userAPIErrors.InvalidRequestException ire,
                     2: userAPIErrors.AuthorizationException are,
                     3: userAPIErrors.UserAPISystemException ase)
 
   /**
-    * Is activate user
+    * Get user list of a particular role
     *
   */
-  bool isActiveUser (1: required string userName,
-                       2: required string token)
+  list<string> getUserListOfRole (1: required string roleName,
+                                 2: required string token)
+            throws (1: userAPIErrors.InvalidRequestException ire,
+                    2: userAPIErrors.AuthorizationException are,
+                    3: userAPIErrors.UserAPISystemException ase)
+
+  /**
+    * Get role list of a particular user
+    *
+  */
+  list<string> getRoleListOfUser (1: required string username,
+                                 2: required string token)
+            throws (1: userAPIErrors.InvalidRequestException ire,
+                    2: userAPIErrors.AuthorizationException are,
+                    3: userAPIErrors.UserAPISystemException ase)
+
+  /**
+    * Get user list of a particular role
+    *
+  */
+  void addRole (1: required string roleName,
+                2: required string token)
+            throws (1: userAPIErrors.InvalidRequestException ire,
+                    2: userAPIErrors.AuthorizationException are,
+                    3: userAPIErrors.UserAPISystemException ase)
+
+  /**
+    * Get user list of a particular role
+    *
+  */
+  void removeRole (1: required string roleName,
+                   2: required string token)
+            throws (1: userAPIErrors.InvalidRequestException ire,
+                    2: userAPIErrors.AuthorizationException are,
+                    3: userAPIErrors.UserAPISystemException ase)
+
+  /**
+    * Get user list of a particular role
+    *
+  */
+  list<string> getRoleNames (1: required string token)
             throws (1: userAPIErrors.InvalidRequestException ire,
                     2: userAPIErrors.AuthorizationException are,
                     3: userAPIErrors.UserAPISystemException ase)

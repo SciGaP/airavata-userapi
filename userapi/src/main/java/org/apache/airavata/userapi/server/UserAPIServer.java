@@ -22,7 +22,9 @@
 package org.apache.airavata.userapi.server;
 
 import org.apache.airavata.userapi.UserAPI;
+import org.apache.airavata.userapi.common.utils.Constants;
 import org.apache.airavata.userapi.common.utils.IServer;
+import org.apache.airavata.userapi.common.utils.ServerProperties;
 import org.apache.airavata.userapi.error.UserAPIErrorType;
 import org.apache.airavata.userapi.error.UserAPISystemException;
 import org.apache.airavata.userapi.server.handler.UserAPIServerHandler;
@@ -33,6 +35,7 @@ import org.apache.thrift.transport.TServerTransport;
 import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.net.InetSocketAddress;
 
 
@@ -52,8 +55,10 @@ public class UserAPIServer implements IServer{
 
     public void startUserAPIServer(UserAPI.Processor<UserAPI.Iface> mockUserAPIServer) throws Exception {
         try {
-            final int serverPort = 8932; //Integer.parseInt(ServerSettings.getSetting(Constants.API_SERVER_PORT,"8930"));
-            final String serverHost = "localhost"; //ServerSettings.getSetting(Constants.API_SERVER_HOST, null);
+            ServerProperties properties = ServerProperties.getInstance();
+
+            final int serverPort = Integer.parseInt(properties.getProperty(Constants.USER_API_SERVER_PORT, "8932"));
+            final String serverHost = properties.getProperty(Constants.USER_API_SERVER_HOST, null);
 
             TServerTransport serverTransport;
 
@@ -65,7 +70,7 @@ public class UserAPIServer implements IServer{
             }
 
             TThreadPoolServer.Args options = new TThreadPoolServer.Args(serverTransport);
-            options.minWorkerThreads = 30; //Integer.parseInt(ServerSettings.getSetting(Constants.API_SERVER_MIN_THREADS, "30"));
+            options.minWorkerThreads = Integer.parseInt(properties.getProperty(Constants.USER_API_SERVER_MIN_THREADS, "30"));
             server = new TThreadPoolServer(options.processor(mockUserAPIServer));
             new Thread() {
                 public void run() {

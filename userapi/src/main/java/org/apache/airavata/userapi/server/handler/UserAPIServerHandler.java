@@ -35,6 +35,7 @@ import org.wso2.carbon.authenticator.stub.LogoutAuthenticationExceptionException
 import org.wso2.carbon.um.ws.api.stub.UserStoreExceptionException;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
 public class UserAPIServerHandler implements UserAPI.Iface{
 
@@ -154,9 +155,9 @@ public class UserAPIServerHandler implements UserAPI.Iface{
     }
 
     @Override
-    public void activateUser(String userName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+    public void addUserToRole(String userName, String roleName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
         try {
-            userStoreManagerServiceClient.activateUser(userName, token);
+            userStoreManagerServiceClient.addUserToRole(userName,roleName,token);
         } catch (RemoteException e) {
             e.printStackTrace();
             throw new UserAPISystemException();
@@ -167,9 +168,9 @@ public class UserAPIServerHandler implements UserAPI.Iface{
     }
 
     @Override
-    public void deactivateUser(String userName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+    public void removeUserFromRole(String userName, String roleName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
         try {
-            userStoreManagerServiceClient.deactivateUser(userName, token);
+            userStoreManagerServiceClient.removeUserFromRole(userName,roleName,token);
         } catch (RemoteException e) {
             e.printStackTrace();
             throw new UserAPISystemException();
@@ -180,9 +181,61 @@ public class UserAPIServerHandler implements UserAPI.Iface{
     }
 
     @Override
-    public boolean isActiveUser(String userName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-        try{
-            return userStoreManagerServiceClient.isActiveUser(userName, token);
+    public List<String> getUserListOfRole(String roleName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        try {
+            return userStoreManagerServiceClient.getUserListOfRole(roleName,token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
+    }
+
+    @Override
+    public List<String> getRoleListOfUser(String username, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        try {
+            return userStoreManagerServiceClient.getRoleListOfUser(username,token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
+    }
+
+    @Override
+    public void addRole(String roleName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        try {
+            userStoreManagerServiceClient.addRole(roleName,token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
+    }
+
+    @Override
+    public void removeRole(String roleName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        try {
+            userStoreManagerServiceClient.removeRole(roleName,token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
+    }
+
+    @Override
+    public List<String> getRoleNames(String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        try {
+            return userStoreManagerServiceClient.getRoleNames(token);
         } catch (RemoteException e) {
             e.printStackTrace();
             throw new UserAPISystemException();

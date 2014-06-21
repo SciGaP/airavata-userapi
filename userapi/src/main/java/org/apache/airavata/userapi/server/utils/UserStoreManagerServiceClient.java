@@ -27,12 +27,12 @@ import org.wso2.carbon.um.ws.api.stub.RemoteUserStoreManagerServiceStub;
 import org.wso2.carbon.um.ws.api.stub.UserStoreExceptionException;
 
 import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.List;
 
 public class UserStoreManagerServiceClient {
 
     private final String serviceName = "RemoteUserStoreManagerService";
-    private final String activeUserGroup = "active";
-    private boolean userGroupsCreated = false;
     private RemoteUserStoreManagerServiceStub remoteUserStoreManagerServiceStub;
     private String endPoint;
 
@@ -49,13 +49,7 @@ public class UserStoreManagerServiceClient {
 
     public void createNewUser(String username, String password, String token) throws RemoteException, UserStoreExceptionException {
         authenticateStubFromCookie(token);
-
-        if(!userGroupsCreated){
-            setupUserGroups();
-            userGroupsCreated = true;
-        }
-        //by default a user is created as an active user
-        remoteUserStoreManagerServiceStub.addUser(username,password,new String[]{activeUserGroup},null,null,false);
+        remoteUserStoreManagerServiceStub.addUser(username,password,null,null,null,false);
     }
 
     public void removeUser(String username, String token) throws RemoteException, UserStoreExceptionException {
@@ -74,37 +68,39 @@ public class UserStoreManagerServiceClient {
         remoteUserStoreManagerServiceStub.updateCredential(username, newPassword, oldPassword);
     }
 
-    public void activateUser(String username, String token) throws RemoteException, UserStoreExceptionException {
+    public void addUserToRole(String username, String roleName, String token) throws RemoteException, UserStoreExceptionException {
         authenticateStubFromCookie(token);
-        String[] roleList = remoteUserStoreManagerServiceStub.getRoleListOfUser(username);
-        for(int i=0;i<roleList.length;i++){
-            if(roleList[i].equals(activeUserGroup)){
-                return;
-            }
-        }
-        remoteUserStoreManagerServiceStub.updateRoleListOfUser(username,null,new String[]{activeUserGroup});
+        remoteUserStoreManagerServiceStub.updateRoleListOfUser(username,null,new String[]{roleName});
     }
 
-    public void deactivateUser(String username, String token) throws RemoteException, UserStoreExceptionException {
+    public void removeUserFromRole(String username, String roleName, String token) throws RemoteException, UserStoreExceptionException {
         authenticateStubFromCookie(token);
-        String[] roleList = remoteUserStoreManagerServiceStub.getRoleListOfUser(username);
-        for(int i=0;i<roleList.length;i++){
-            if(roleList[i].equals(activeUserGroup)){
-                remoteUserStoreManagerServiceStub.updateRoleListOfUser(username,new String[]{activeUserGroup}, null);
-                return;
-            }
-        }
+        remoteUserStoreManagerServiceStub.updateRoleListOfUser(username,new String[]{roleName}, null);
     }
 
-    public boolean isActiveUser(String username, String token) throws RemoteException, UserStoreExceptionException {
+    public List<String> getUserListOfRole(String roleName, String token)throws RemoteException, UserStoreExceptionException {
         authenticateStubFromCookie(token);
-        String[] roleList = remoteUserStoreManagerServiceStub.getRoleListOfUser(username);
-        for(int i=0;i<roleList.length;i++){
-            if(roleList[i].equals(activeUserGroup)){
-                return true;
-            }
-        }
-        return false;
+        return Arrays.asList(remoteUserStoreManagerServiceStub.getUserListOfRole(roleName));
+    }
+
+    public List<String> getRoleListOfUser(String username, String token)throws RemoteException, UserStoreExceptionException {
+        authenticateStubFromCookie(token);
+        return Arrays.asList(remoteUserStoreManagerServiceStub.getRoleListOfUser(username));
+    }
+
+    public void addRole(String roleName, String token)throws RemoteException, UserStoreExceptionException {
+        authenticateStubFromCookie(token);
+        remoteUserStoreManagerServiceStub.addRole(roleName,null,null);
+    }
+
+    public void removeRole(String roleName, String token)throws RemoteException, UserStoreExceptionException {
+        authenticateStubFromCookie(token);
+        remoteUserStoreManagerServiceStub.deleteRole(roleName);
+    }
+
+    public List<String> getRoleNames(String token)throws RemoteException, UserStoreExceptionException {
+        authenticateStubFromCookie(token);
+        return Arrays.asList(remoteUserStoreManagerServiceStub.getRoleNames());
     }
 
     private void authenticateStubFromCookie(String token){
@@ -116,11 +112,4 @@ public class UserStoreManagerServiceClient {
         option.setManageSession(true);
         option.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING, token);
     }
-
-    private void setupUserGroups() throws RemoteException, UserStoreExceptionException {
-        if(!remoteUserStoreManagerServiceStub.isExistingRole(activeUserGroup)){
-            remoteUserStoreManagerServiceStub.addRole(activeUserGroup,null,null);
-        }
-    }
-
 }
