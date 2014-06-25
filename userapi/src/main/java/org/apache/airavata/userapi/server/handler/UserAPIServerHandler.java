@@ -103,6 +103,7 @@ public class UserAPIServerHandler implements UserAPI.Iface{
 
     @Override
     public void createNewUser(String userName, String password, UserProfile userProfile, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        //@Todo
         try {
             userStoreManagerServiceClient.createNewUser(userName,password,token);
         } catch (RemoteException e) {
@@ -116,11 +117,12 @@ public class UserAPIServerHandler implements UserAPI.Iface{
 
     @Override
     public void updateUserProfile(String userName, UserProfile userProfile, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-
+        //@Todo
     }
 
     @Override
     public UserProfile getUserProfile(String userName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        //@Todo
         return null;
     }
 
