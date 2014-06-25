@@ -27,6 +27,7 @@ import org.apache.airavata.userapi.error.AuthenticationException;
 import org.apache.airavata.userapi.error.AuthorizationException;
 import org.apache.airavata.userapi.error.InvalidRequestException;
 import org.apache.airavata.userapi.error.UserAPISystemException;
+import org.apache.airavata.userapi.models.UserProfile;
 import org.apache.airavata.userapi.server.utils.LoginAdminServiceClient;
 import org.apache.airavata.userapi.server.utils.UserStoreManagerServiceClient;
 import org.apache.thrift.TException;
@@ -101,7 +102,7 @@ public class UserAPIServerHandler implements UserAPI.Iface{
     }
 
     @Override
-    public void createNewUser(String userName, String password, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+    public void createNewUser(String userName, String password, UserProfile userProfile, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
         try {
             userStoreManagerServiceClient.createNewUser(userName,password,token);
         } catch (RemoteException e) {
@@ -111,6 +112,16 @@ public class UserAPIServerHandler implements UserAPI.Iface{
             e.printStackTrace();
             throw new UserAPISystemException();
         }
+    }
+
+    @Override
+    public void updateUserProfile(String userName, UserProfile userProfile, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+
+    }
+
+    @Override
+    public UserProfile getUserProfile(String userName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+        return null;
     }
 
     @Override
