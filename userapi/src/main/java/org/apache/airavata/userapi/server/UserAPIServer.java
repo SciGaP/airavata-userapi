@@ -57,11 +57,14 @@ public class UserAPIServer implements IServer{
         try {
             ServerProperties properties = ServerProperties.getInstance();
 
-            System.setProperty(
-                    "javax.net.ssl.trustStore",
-                    properties.getProperty(Constants.KEY_STORE_NAME,"keystore.jks"));
+            System.setProperty("javax.net.ssl.keyStore",properties.getProperty(Constants.KEY_STORE_NAME,"keystore.jks"));
+            System.setProperty("javax.net.ssl.keyStoreType",properties.getProperty(Constants.KEY_STORE_TYPE,"JKS"));
+            System.setProperty("javax.net.ssl.keyStorePassword", properties.getProperty(Constants.KEY_STORE_PWD,"scigap_admin"));
+
+            System.setProperty("javax.net.ssl.trustStore",properties.getProperty(Constants.KEY_STORE_NAME,"keystore.jks"));
+            System.setProperty("javax.net.ssl.trustStoreType",properties.getProperty(Constants.KEY_STORE_TYPE,"JKS"));
             System.setProperty("javax.net.ssl.trustStorePassword", properties.getProperty(Constants.KEY_STORE_PWD,"scigap_admin"));
-            System.setProperty("javax.net.ssl.t" + "rustStoreType",properties.getProperty(Constants.KEY_STORE_TYPE,"JKS"));
+
 
             final int serverPort = Integer.parseInt(properties.getProperty(Constants.USER_API_SERVER_PORT, "8932"));
             final String serverHost = properties.getProperty(Constants.USER_API_SERVER_HOST, null);

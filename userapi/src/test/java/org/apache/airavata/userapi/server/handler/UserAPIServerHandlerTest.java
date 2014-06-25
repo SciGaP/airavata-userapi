@@ -24,6 +24,8 @@ package org.apache.airavata.userapi.server.handler;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import java.util.List;
+
 public class UserAPIServerHandlerTest extends TestCase {
     private UserAPIServerHandler userAPIServerHandler;
     private String token;
@@ -42,7 +44,7 @@ public class UserAPIServerHandlerTest extends TestCase {
     }
 
     public void testAdminLogin() throws Exception {
-        String temp = userAPIServerHandler.adminLogin("scigap_admin","sci9067@min");
+        String temp = userAPIServerHandler.adminLogin("admin@phprg.scigap.org","phprg9067@min");
         Assert.assertNotNull(temp);
         this.token = temp;
     }
@@ -62,7 +64,7 @@ public class UserAPIServerHandlerTest extends TestCase {
 
     public void testCheckUsernameExists() throws Exception {
         testAdminLogin();
-        boolean temp = userAPIServerHandler.checkUsernameExists("scigap_admin", token);
+        boolean temp = userAPIServerHandler.checkUsernameExists("admin", token);
         Assert.assertTrue(temp);
     }
 
@@ -107,5 +109,60 @@ public class UserAPIServerHandlerTest extends TestCase {
         testAdminLogin();
         boolean isAuthentic = userAPIServerHandler.authenticateUser("scigap_admin","sci9067@min",token);
         Assert.assertTrue(isAuthentic);
+    }
+
+    public void testGetRoleNames() throws Exception{
+        testAdminLogin();
+        List<String> result = userAPIServerHandler.getRoleNames(token);
+        Assert.assertNotNull(result);
+    }
+
+    public void testRoles() throws Exception{
+        testAdminLogin();
+        userAPIServerHandler.addRole("New_Role", token);
+        List<String> result = userAPIServerHandler.getRoleNames(token);
+        boolean contains = false;
+        for(int i=0;i<result.size();i++){
+            if(result.get(i).equals("New_Role")){
+                contains = true;
+                break;
+            }
+        }
+        Assert.assertTrue(contains);
+
+        userAPIServerHandler.addUserToRole("admin","New_Role", token);
+        result = userAPIServerHandler.getRoleListOfUser("admin", token);
+        contains = false;
+        for(int i=0;i<result.size();i++){
+            if(result.get(i).equals("New_Role")){
+                contains = true;
+                break;
+            }
+        }
+        Assert.assertTrue(contains);
+
+        userAPIServerHandler.removeUserFromRole("admin", "New_Role", token);
+        result = userAPIServerHandler.getRoleListOfUser("admin", token);
+        contains = false;
+        for(int i=0;i<result.size();i++){
+            if(result.get(i).equals("New_Role")){
+                contains = true;
+                break;
+            }
+        }
+        Assert.assertTrue(!contains);
+
+
+        userAPIServerHandler.removeRole("New_Role", token);
+        result = userAPIServerHandler.getRoleNames(token);
+        contains = false;
+        for(int i=0;i<result.size();i++){
+            if(result.get(i).equals("New_Role")){
+                contains = true;
+                break;
+            }
+        }
+
+        Assert.assertTrue(!contains);
     }
 }
