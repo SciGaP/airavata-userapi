@@ -103,9 +103,9 @@ public class UserAPIServerHandler implements UserAPI.Iface{
 
     @Override
     public void createNewUser(String userName, String password, UserProfile userProfile, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-        //@Todo
         try {
-            userStoreManagerServiceClient.createNewUser(userName,password,token);
+            userStoreManagerServiceClient.createNewUser(userName,password, userProfile, token);
+            userStoreManagerServiceClient.updateUserProfile(userName,userProfile, token);
         } catch (RemoteException e) {
             e.printStackTrace();
             throw new UserAPISystemException();
@@ -117,13 +117,28 @@ public class UserAPIServerHandler implements UserAPI.Iface{
 
     @Override
     public void updateUserProfile(String userName, UserProfile userProfile, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-        //@Todo
+        try {
+            userStoreManagerServiceClient.updateUserProfile(userName,userProfile, token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
     }
 
     @Override
     public UserProfile getUserProfile(String userName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-        //@Todo
-        return null;
+        try {
+            return userStoreManagerServiceClient.getUserProfile(userName, token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
     }
 
     @Override

@@ -27,9 +27,7 @@ package org.apache.airavata.userapi.server.utils;
 
 public class UserProfileClaimUris {
 
-    public static final String TITLE = "http://wso2.org/claims/title";
-
-    public static final String FIRST_NAME = "http://wso2.org/claims/givenName";
+    public static final String FIRST_NAME = "http://wso2.org/claims/givenname";
 
     public static final String LAST_NAME = "http://wso2.org/claims/lastname";
 
@@ -37,6 +35,4 @@ public class UserProfileClaimUris {
 
     public static final String ORGANIZATION = "http://wso2.org/claims/organization";
 
-    public static final String ACCOUNT_LOCKED = "http://wso2.org/claims/accountLocked";
-    
 }

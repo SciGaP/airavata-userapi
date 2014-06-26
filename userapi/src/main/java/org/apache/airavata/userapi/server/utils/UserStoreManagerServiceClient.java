@@ -21,8 +21,10 @@
 
 package org.apache.airavata.userapi.server.utils;
 
+import org.apache.airavata.userapi.models.UserProfile;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+import org.wso2.carbon.um.ws.api.stub.ClaimValue;
 import org.wso2.carbon.um.ws.api.stub.RemoteUserStoreManagerServiceStub;
 import org.wso2.carbon.um.ws.api.stub.UserStoreExceptionException;
 
@@ -47,9 +49,59 @@ public class UserStoreManagerServiceClient {
         return isExistingUser;
     }
 
-    public void createNewUser(String username, String password, String token) throws RemoteException, UserStoreExceptionException {
+    public void createNewUser(String username, String password, UserProfile userProfile, String token) throws RemoteException, UserStoreExceptionException {
         authenticateStubFromCookie(token);
         remoteUserStoreManagerServiceStub.addUser(username,password,null,null,null,false);
+    }
+
+    public void updateUserProfile(String username, UserProfile userProfile, String token) throws RemoteException, UserStoreExceptionException {
+        authenticateStubFromCookie(token);
+        ClaimValue[] claims = new ClaimValue[4];
+
+        claims[0] = new ClaimValue();
+        claims[0].setClaimURI(UserProfileClaimUris.FIRST_NAME);
+        claims[0].setValue(userProfile.firstName);
+
+        claims[1] = new ClaimValue();
+        claims[1].setClaimURI(UserProfileClaimUris.LAST_NAME);
+        claims[1].setValue(userProfile.lastName);
+
+        claims[2] = new ClaimValue();
+        claims[2].setClaimURI(UserProfileClaimUris.EMAIL_ADDRESS);
+        claims[2].setValue(userProfile.emailAddress);
+
+        claims[3] = new ClaimValue();
+        claims[3].setClaimURI(UserProfileClaimUris.ORGANIZATION);
+        claims[3].setValue(userProfile.organization);
+
+        remoteUserStoreManagerServiceStub.setUserClaimValues(username,claims, null);
+    }
+
+    public UserProfile getUserProfile(String username, String token) throws RemoteException, UserStoreExceptionException {
+        authenticateStubFromCookie(token);
+        String[] claims = new String[]{
+                UserProfileClaimUris.FIRST_NAME,
+                UserProfileClaimUris.LAST_NAME,
+                UserProfileClaimUris.EMAIL_ADDRESS,
+                UserProfileClaimUris.ORGANIZATION
+        };
+        ClaimValue[] claimValues = remoteUserStoreManagerServiceStub.getUserClaimValuesForClaims(username, claims, null);
+        UserProfile userProfile = new UserProfile();
+
+        for(int i=0;i<claimValues.length;i++){
+
+            if(claimValues[i].getClaimURI().equals(UserProfileClaimUris.FIRST_NAME)){
+                userProfile.firstName = claimValues[i].getValue();
+            }else if(claimValues[i].getClaimURI().equals(UserProfileClaimUris.LAST_NAME)){
+                userProfile.lastName = claimValues[i].getValue();
+            }else if(claimValues[i].getClaimURI().equals(UserProfileClaimUris.EMAIL_ADDRESS)){
+                userProfile.emailAddress = claimValues[i].getValue();
+            }else if(claimValues[i].getClaimURI().equals(UserProfileClaimUris.ORGANIZATION)){
+                userProfile.organization = claimValues[i].getValue();
+            }
+        }
+
+        return userProfile;
     }
 
     public void removeUser(String username, String token) throws RemoteException, UserStoreExceptionException {

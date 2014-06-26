@@ -23,6 +23,7 @@ package org.apache.airavata.userapi.server.handler;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import org.apache.airavata.userapi.models.UserProfile;
 
 import java.util.List;
 
@@ -71,13 +72,43 @@ public class UserAPIServerHandlerTest extends TestCase {
     public void testCreateNewUser() throws Exception {
         testAdminLogin();
         boolean exceptionThrown = false;
+        UserProfile userProfile = new UserProfile();
+        userProfile.firstName = "test_user";
+        userProfile.lastName = "test_user";
+        userProfile.emailAddress = "test_user@scigap.org";
+        userProfile.organization = "scigap";
+
         try{
-            userAPIServerHandler.createNewUser("test_user","abc123",token);
+            userAPIServerHandler.createNewUser("test_user","abc123", userProfile, token);
         }catch (Exception ex){
             exceptionThrown = true;
         }
 
         Assert.assertFalse(exceptionThrown);
+    }
+
+    public void testUpdateUserProfile() throws Exception{
+        testAdminLogin();
+        boolean exceptionThrown = false;
+        UserProfile userProfile = new UserProfile();
+        userProfile.firstName = "test_user";
+        userProfile.lastName = "test_user";
+        userProfile.emailAddress = "test_user@scigap.org";
+        userProfile.organization = "scigap";
+
+        try{
+            userAPIServerHandler.updateUserProfile("test_user", userProfile, token);
+        }catch (Exception ex){
+            exceptionThrown = true;
+        }
+
+        Assert.assertFalse(exceptionThrown);
+    }
+
+    public void testGetUserProfile() throws Exception{
+        testAdminLogin();
+        UserProfile profile = userAPIServerHandler.getUserProfile("test_user", token);
+        Assert.assertNotNull(profile);
     }
 
     public void testRemoveUser() throws Exception {
