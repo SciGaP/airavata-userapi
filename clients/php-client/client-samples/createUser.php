@@ -32,6 +32,7 @@ use Airavata\UserAPI\Client\AiravataClientFactory;
 use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Transport\TSocket;
 use Airavata\UserAPI\UserAPIClient;
+use Airavata\UserAPI\Models\UserProfile;
 
 $userapiconfig = parse_ini_file("userapi-client-properties.ini");
 
@@ -47,7 +48,13 @@ try
     $token = $client->adminLogin($userapiconfig['ADMIN_USERNAME'],$userapiconfig['ADMIN_PASSWORD']);
     if($token !== null){
         //User name must be a non null string with following format, [a-zA-Z0-9._-|//]
-        $client->createNewUser("phpTestUser","testUserPwd", $token);
+        $userProfile = new UserProfile();
+        $userProfile->firstName = "testUser";
+        $userProfile->lastName = "testUser";
+        $userProfile->emailAddress = "testUser@test.com";
+        $userProfile->organization = "testOrg";
+
+        $client->createNewUser("phpTestUser","testUserPwd", $userProfile, $token);
         print "Created new user \"phpTestUser\" successfully" . "\n";
         $client->removeUser("phpTestUser", $token);
         print "Removed \"phpTestUser\" user successfully" . "\n";

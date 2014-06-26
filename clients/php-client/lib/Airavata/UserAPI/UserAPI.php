@@ -64,12 +64,37 @@ interface UserAPIIf {
    * 
    * @param string $userName
    * @param string $password
+   * @param \Airavata\UserAPI\Models\UserProfile $userProfile
    * @param string $token
    * @throws \Airavata\UserAPI\Error\InvalidRequestException
    * @throws \Airavata\UserAPI\Error\AuthorizationException
    * @throws \Airavata\UserAPI\Error\UserAPISystemException
    */
-  public function createNewUser($userName, $password, $token);
+  public function createNewUser($userName, $password, \Airavata\UserAPI\Models\UserProfile $userProfile, $token);
+  /**
+   * Update user profile
+   * 
+   * 
+   * @param string $userName
+   * @param \Airavata\UserAPI\Models\UserProfile $userProfile
+   * @param string $token
+   * @throws \Airavata\UserAPI\Error\InvalidRequestException
+   * @throws \Airavata\UserAPI\Error\AuthorizationException
+   * @throws \Airavata\UserAPI\Error\UserAPISystemException
+   */
+  public function updateUserProfile($userName, \Airavata\UserAPI\Models\UserProfile $userProfile, $token);
+  /**
+   * Get user profile
+   * 
+   * 
+   * @param string $userName
+   * @param string $token
+   * @return \Airavata\UserAPI\Models\UserProfile
+   * @throws \Airavata\UserAPI\Error\InvalidRequestException
+   * @throws \Airavata\UserAPI\Error\AuthorizationException
+   * @throws \Airavata\UserAPI\Error\UserAPISystemException
+   */
+  public function getUserProfile($userName, $token);
   /**
    * Remove user
    * 
@@ -433,17 +458,18 @@ class UserAPIClient implements \Airavata\UserAPI\UserAPIIf {
     throw new \Exception("checkUsernameExists failed: unknown result");
   }
 
-  public function createNewUser($userName, $password, $token)
+  public function createNewUser($userName, $password, \Airavata\UserAPI\Models\UserProfile $userProfile, $token)
   {
-    $this->send_createNewUser($userName, $password, $token);
+    $this->send_createNewUser($userName, $password, $userProfile, $token);
     $this->recv_createNewUser();
   }
 
-  public function send_createNewUser($userName, $password, $token)
+  public function send_createNewUser($userName, $password, \Airavata\UserAPI\Models\UserProfile $userProfile, $token)
   {
     $args = new \Airavata\UserAPI\UserAPI_createNewUser_args();
     $args->userName = $userName;
     $args->password = $password;
+    $args->userProfile = $userProfile;
     $args->token = $token;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
@@ -490,6 +516,126 @@ class UserAPIClient implements \Airavata\UserAPI\UserAPIIf {
       throw $result->ase;
     }
     return;
+  }
+
+  public function updateUserProfile($userName, \Airavata\UserAPI\Models\UserProfile $userProfile, $token)
+  {
+    $this->send_updateUserProfile($userName, $userProfile, $token);
+    $this->recv_updateUserProfile();
+  }
+
+  public function send_updateUserProfile($userName, \Airavata\UserAPI\Models\UserProfile $userProfile, $token)
+  {
+    $args = new \Airavata\UserAPI\UserAPI_updateUserProfile_args();
+    $args->userName = $userName;
+    $args->userProfile = $userProfile;
+    $args->token = $token;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'updateUserProfile', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('updateUserProfile', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_updateUserProfile()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\Airavata\UserAPI\UserAPI_updateUserProfile_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \Airavata\UserAPI\UserAPI_updateUserProfile_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->ire !== null) {
+      throw $result->ire;
+    }
+    if ($result->are !== null) {
+      throw $result->are;
+    }
+    if ($result->ase !== null) {
+      throw $result->ase;
+    }
+    return;
+  }
+
+  public function getUserProfile($userName, $token)
+  {
+    $this->send_getUserProfile($userName, $token);
+    return $this->recv_getUserProfile();
+  }
+
+  public function send_getUserProfile($userName, $token)
+  {
+    $args = new \Airavata\UserAPI\UserAPI_getUserProfile_args();
+    $args->userName = $userName;
+    $args->token = $token;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'getUserProfile', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('getUserProfile', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_getUserProfile()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\Airavata\UserAPI\UserAPI_getUserProfile_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \Airavata\UserAPI\UserAPI_getUserProfile_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->success !== null) {
+      return $result->success;
+    }
+    if ($result->ire !== null) {
+      throw $result->ire;
+    }
+    if ($result->are !== null) {
+      throw $result->are;
+    }
+    if ($result->ase !== null) {
+      throw $result->ase;
+    }
+    throw new \Exception("getUserProfile failed: unknown result");
   }
 
   public function removeUser($userName, $token)
@@ -1952,6 +2098,10 @@ class UserAPI_createNewUser_args {
    */
   public $password = null;
   /**
+   * @var \Airavata\UserAPI\Models\UserProfile
+   */
+  public $userProfile = null;
+  /**
    * @var string
    */
   public $token = null;
@@ -1968,6 +2118,11 @@ class UserAPI_createNewUser_args {
           'type' => TType::STRING,
           ),
         3 => array(
+          'var' => 'userProfile',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Models\UserProfile',
+          ),
+        4 => array(
           'var' => 'token',
           'type' => TType::STRING,
           ),
@@ -1979,6 +2134,9 @@ class UserAPI_createNewUser_args {
       }
       if (isset($vals['password'])) {
         $this->password = $vals['password'];
+      }
+      if (isset($vals['userProfile'])) {
+        $this->userProfile = $vals['userProfile'];
       }
       if (isset($vals['token'])) {
         $this->token = $vals['token'];
@@ -2020,6 +2178,14 @@ class UserAPI_createNewUser_args {
           }
           break;
         case 3:
+          if ($ftype == TType::STRUCT) {
+            $this->userProfile = new \Airavata\UserAPI\Models\UserProfile();
+            $xfer += $this->userProfile->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 4:
           if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->token);
           } else {
@@ -2049,8 +2215,16 @@ class UserAPI_createNewUser_args {
       $xfer += $output->writeString($this->password);
       $xfer += $output->writeFieldEnd();
     }
+    if ($this->userProfile !== null) {
+      if (!is_object($this->userProfile)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('userProfile', TType::STRUCT, 3);
+      $xfer += $this->userProfile->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->token !== null) {
-      $xfer += $output->writeFieldBegin('token', TType::STRING, 3);
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 4);
       $xfer += $output->writeString($this->token);
       $xfer += $output->writeFieldEnd();
     }
@@ -2166,6 +2340,512 @@ class UserAPI_createNewUser_result {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('UserAPI_createNewUser_result');
+    if ($this->ire !== null) {
+      $xfer += $output->writeFieldBegin('ire', TType::STRUCT, 1);
+      $xfer += $this->ire->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->are !== null) {
+      $xfer += $output->writeFieldBegin('are', TType::STRUCT, 2);
+      $xfer += $this->are->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->ase !== null) {
+      $xfer += $output->writeFieldBegin('ase', TType::STRUCT, 3);
+      $xfer += $this->ase->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAPI_updateUserProfile_args {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $userName = null;
+  /**
+   * @var \Airavata\UserAPI\Models\UserProfile
+   */
+  public $userProfile = null;
+  /**
+   * @var string
+   */
+  public $token = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'userName',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'userProfile',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Models\UserProfile',
+          ),
+        3 => array(
+          'var' => 'token',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['userName'])) {
+        $this->userName = $vals['userName'];
+      }
+      if (isset($vals['userProfile'])) {
+        $this->userProfile = $vals['userProfile'];
+      }
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAPI_updateUserProfile_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->userName);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRUCT) {
+            $this->userProfile = new \Airavata\UserAPI\Models\UserProfile();
+            $xfer += $this->userProfile->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAPI_updateUserProfile_args');
+    if ($this->userName !== null) {
+      $xfer += $output->writeFieldBegin('userName', TType::STRING, 1);
+      $xfer += $output->writeString($this->userName);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->userProfile !== null) {
+      if (!is_object($this->userProfile)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('userProfile', TType::STRUCT, 2);
+      $xfer += $this->userProfile->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 3);
+      $xfer += $output->writeString($this->token);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAPI_updateUserProfile_result {
+  static $_TSPEC;
+
+  /**
+   * @var \Airavata\UserAPI\Error\InvalidRequestException
+   */
+  public $ire = null;
+  /**
+   * @var \Airavata\UserAPI\Error\AuthorizationException
+   */
+  public $are = null;
+  /**
+   * @var \Airavata\UserAPI\Error\UserAPISystemException
+   */
+  public $ase = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'ire',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'are',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\AuthorizationException',
+          ),
+        3 => array(
+          'var' => 'ase',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\UserAPISystemException',
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['ire'])) {
+        $this->ire = $vals['ire'];
+      }
+      if (isset($vals['are'])) {
+        $this->are = $vals['are'];
+      }
+      if (isset($vals['ase'])) {
+        $this->ase = $vals['ase'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAPI_updateUserProfile_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->ire = new \Airavata\UserAPI\Error\InvalidRequestException();
+            $xfer += $this->ire->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRUCT) {
+            $this->are = new \Airavata\UserAPI\Error\AuthorizationException();
+            $xfer += $this->are->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRUCT) {
+            $this->ase = new \Airavata\UserAPI\Error\UserAPISystemException();
+            $xfer += $this->ase->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAPI_updateUserProfile_result');
+    if ($this->ire !== null) {
+      $xfer += $output->writeFieldBegin('ire', TType::STRUCT, 1);
+      $xfer += $this->ire->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->are !== null) {
+      $xfer += $output->writeFieldBegin('are', TType::STRUCT, 2);
+      $xfer += $this->are->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->ase !== null) {
+      $xfer += $output->writeFieldBegin('ase', TType::STRUCT, 3);
+      $xfer += $this->ase->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAPI_getUserProfile_args {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $userName = null;
+  /**
+   * @var string
+   */
+  public $token = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'userName',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'token',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['userName'])) {
+        $this->userName = $vals['userName'];
+      }
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAPI_getUserProfile_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->userName);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAPI_getUserProfile_args');
+    if ($this->userName !== null) {
+      $xfer += $output->writeFieldBegin('userName', TType::STRING, 1);
+      $xfer += $output->writeString($this->userName);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 2);
+      $xfer += $output->writeString($this->token);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAPI_getUserProfile_result {
+  static $_TSPEC;
+
+  /**
+   * @var \Airavata\UserAPI\Models\UserProfile
+   */
+  public $success = null;
+  /**
+   * @var \Airavata\UserAPI\Error\InvalidRequestException
+   */
+  public $ire = null;
+  /**
+   * @var \Airavata\UserAPI\Error\AuthorizationException
+   */
+  public $are = null;
+  /**
+   * @var \Airavata\UserAPI\Error\UserAPISystemException
+   */
+  public $ase = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        0 => array(
+          'var' => 'success',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Models\UserProfile',
+          ),
+        1 => array(
+          'var' => 'ire',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'are',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\AuthorizationException',
+          ),
+        3 => array(
+          'var' => 'ase',
+          'type' => TType::STRUCT,
+          'class' => '\Airavata\UserAPI\Error\UserAPISystemException',
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['success'])) {
+        $this->success = $vals['success'];
+      }
+      if (isset($vals['ire'])) {
+        $this->ire = $vals['ire'];
+      }
+      if (isset($vals['are'])) {
+        $this->are = $vals['are'];
+      }
+      if (isset($vals['ase'])) {
+        $this->ase = $vals['ase'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAPI_getUserProfile_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 0:
+          if ($ftype == TType::STRUCT) {
+            $this->success = new \Airavata\UserAPI\Models\UserProfile();
+            $xfer += $this->success->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->ire = new \Airavata\UserAPI\Error\InvalidRequestException();
+            $xfer += $this->ire->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRUCT) {
+            $this->are = new \Airavata\UserAPI\Error\AuthorizationException();
+            $xfer += $this->are->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRUCT) {
+            $this->ase = new \Airavata\UserAPI\Error\UserAPISystemException();
+            $xfer += $this->ase->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAPI_getUserProfile_result');
+    if ($this->success !== null) {
+      if (!is_object($this->success)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('success', TType::STRUCT, 0);
+      $xfer += $this->success->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->ire !== null) {
       $xfer += $output->writeFieldBegin('ire', TType::STRUCT, 1);
       $xfer += $this->ire->write($output);
