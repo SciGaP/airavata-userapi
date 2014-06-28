@@ -31,4 +31,6 @@ public class Constants {
     public static final String KEY_STORE_PWD = "KEY_STORE_PWD";
     public static final String KEY_STORE_TYPE = "KEY_STORE_TYPE";
 
+    public static final long TOKEN_LIFE_TIME = 99999999;
+
 }

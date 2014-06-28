@@ -28,8 +28,8 @@ import org.apache.airavata.userapi.error.AuthorizationException;
 import org.apache.airavata.userapi.error.InvalidRequestException;
 import org.apache.airavata.userapi.error.UserAPISystemException;
 import org.apache.airavata.userapi.models.UserProfile;
-import org.apache.airavata.userapi.server.utils.LoginAdminServiceClient;
-import org.apache.airavata.userapi.server.utils.UserStoreManagerServiceClient;
+import org.apache.airavata.userapi.server.clients.LoginAdminServiceClient;
+import org.apache.airavata.userapi.server.clients.UserStoreManagerServiceClient;
 import org.apache.thrift.TException;
 import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
 import org.wso2.carbon.authenticator.stub.LogoutAuthenticationExceptionException;
@@ -67,6 +67,9 @@ public class UserAPIServerHandler implements UserAPI.Iface{
         } catch (LoginAuthenticationExceptionException e) {
             e.printStackTrace();
             throw new AuthenticationException();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
         }
 
         return token;
