@@ -23,6 +23,7 @@
  */
 
 include "userAPIErrors.thrift"
+include "userAPIModels.thrift"
 
 namespace java org.apache.airavata.userapi
 namespace php Airavata.UserAPI
@@ -91,10 +92,33 @@ service UserAPI {
   */
   void createNewUser (1: required string userName,
                       2: required string password,
-                      3: required string token)
+                      3: required userAPIModels.UserProfile userProfile,
+                      4: required string token)
         throws (1: userAPIErrors.InvalidRequestException ire,
                 2: userAPIErrors.AuthorizationException are,
                 3: userAPIErrors.UserAPISystemException ase)
+
+/**
+   * Update user profile
+   *
+  */
+  void updateUserProfile (1: required string userName,
+                          2: required userAPIModels.UserProfile userProfile,
+                          3: required string token)
+        throws (1: userAPIErrors.InvalidRequestException ire,
+                2: userAPIErrors.AuthorizationException are,
+                3: userAPIErrors.UserAPISystemException ase)
+
+/**
+   * Get user profile
+   *
+  */
+  userAPIModels.UserProfile getUserProfile (1: required string userName,
+                          2: required string token)
+        throws (1: userAPIErrors.InvalidRequestException ire,
+                2: userAPIErrors.AuthorizationException are,
+                3: userAPIErrors.UserAPISystemException ase)
+
 
   /**
      * Remove user
@@ -105,6 +129,7 @@ service UserAPI {
           throws (1: userAPIErrors.InvalidRequestException ire,
                   2: userAPIErrors.AuthorizationException are,
                   3: userAPIErrors.UserAPISystemException ase)
+
   /**
     * Update user password
     *
