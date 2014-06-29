@@ -108,7 +108,6 @@ public class UserAPIServerHandler implements UserAPI.Iface{
     public void createNewUser(String userName, String password, UserProfile userProfile, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
         try {
             userStoreManagerServiceClient.createNewUser(userName,password, userProfile, token);
-            userStoreManagerServiceClient.updateUserProfile(userName,userProfile, token);
         } catch (RemoteException e) {
             e.printStackTrace();
             throw new UserAPISystemException();

@@ -48,12 +48,7 @@ public class UserStoreManagerServiceClient extends BaseServiceClient{
 
     public void createNewUser(String username, String password, UserProfile userProfile, String token) throws AuthorizationException, RemoteException, UserStoreExceptionException {
         authenticateStubFromToken(token);
-        ((RemoteUserStoreManagerServiceStub)serviceStub).addUser(username, password, null, null, null, false);
-    }
-
-    public void updateUserProfile(String username, UserProfile userProfile, String token) throws AuthorizationException, RemoteException, UserStoreExceptionException {
-        authenticateStubFromToken(token);
-        ClaimValue[] claims = new ClaimValue[4];
+        ClaimValue[] claims = new ClaimValue[10];
 
         claims[0] = new ClaimValue();
         claims[0].setClaimURI(UserProfileClaimUris.FIRST_NAME);
@@ -71,6 +66,77 @@ public class UserStoreManagerServiceClient extends BaseServiceClient{
         claims[3].setClaimURI(UserProfileClaimUris.ORGANIZATION);
         claims[3].setValue(userProfile.organization);
 
+        claims[4] = new ClaimValue();
+        claims[4].setClaimURI(UserProfileClaimUris.ADDRESS);
+        claims[4].setValue(userProfile.address);
+
+        claims[5] = new ClaimValue();
+        claims[5].setClaimURI(UserProfileClaimUris.COUNTRY);
+        claims[5].setValue(userProfile.country);
+
+        claims[6] = new ClaimValue();
+        claims[6].setClaimURI(UserProfileClaimUris.TELEPHONE);
+        claims[6].setValue(userProfile.telephone);
+
+        claims[7] = new ClaimValue();
+        claims[7].setClaimURI(UserProfileClaimUris.MOBILE);
+        claims[7].setValue(userProfile.mobile);
+
+        claims[8] = new ClaimValue();
+        claims[8].setClaimURI(UserProfileClaimUris.IM);
+        claims[8].setValue(userProfile.im);
+
+        claims[9] = new ClaimValue();
+        claims[9].setClaimURI(UserProfileClaimUris.URL);
+        claims[9].setValue(userProfile.url);
+
+        ((RemoteUserStoreManagerServiceStub)serviceStub).addUser(username, password, null, claims, null, false);
+    }
+
+    public void updateUserProfile(String username, UserProfile userProfile, String token) throws AuthorizationException, RemoteException, UserStoreExceptionException {
+        authenticateStubFromToken(token);
+        ClaimValue[] claims = new ClaimValue[10];
+
+        claims[0] = new ClaimValue();
+        claims[0].setClaimURI(UserProfileClaimUris.FIRST_NAME);
+        claims[0].setValue(userProfile.firstName);
+
+        claims[1] = new ClaimValue();
+        claims[1].setClaimURI(UserProfileClaimUris.LAST_NAME);
+        claims[1].setValue(userProfile.lastName);
+
+        claims[2] = new ClaimValue();
+        claims[2].setClaimURI(UserProfileClaimUris.EMAIL_ADDRESS);
+        claims[2].setValue(userProfile.emailAddress);
+
+        claims[3] = new ClaimValue();
+        claims[3].setClaimURI(UserProfileClaimUris.ORGANIZATION);
+        claims[3].setValue(userProfile.organization);
+
+        claims[4] = new ClaimValue();
+        claims[4].setClaimURI(UserProfileClaimUris.ADDRESS);
+        claims[4].setValue(userProfile.address);
+
+        claims[5] = new ClaimValue();
+        claims[5].setClaimURI(UserProfileClaimUris.COUNTRY);
+        claims[5].setValue(userProfile.country);
+
+        claims[6] = new ClaimValue();
+        claims[6].setClaimURI(UserProfileClaimUris.TELEPHONE);
+        claims[6].setValue(userProfile.telephone);
+
+        claims[7] = new ClaimValue();
+        claims[7].setClaimURI(UserProfileClaimUris.MOBILE);
+        claims[7].setValue(userProfile.mobile);
+
+        claims[8] = new ClaimValue();
+        claims[8].setClaimURI(UserProfileClaimUris.IM);
+        claims[8].setValue(userProfile.im);
+
+        claims[9] = new ClaimValue();
+        claims[9].setClaimURI(UserProfileClaimUris.URL);
+        claims[9].setValue(userProfile.url);
+
         ((RemoteUserStoreManagerServiceStub)serviceStub).setUserClaimValues(username, claims, null);
     }
 
@@ -80,13 +146,18 @@ public class UserStoreManagerServiceClient extends BaseServiceClient{
                 UserProfileClaimUris.FIRST_NAME,
                 UserProfileClaimUris.LAST_NAME,
                 UserProfileClaimUris.EMAIL_ADDRESS,
-                UserProfileClaimUris.ORGANIZATION
+                UserProfileClaimUris.ORGANIZATION,
+                UserProfileClaimUris.ADDRESS,
+                UserProfileClaimUris.COUNTRY,
+                UserProfileClaimUris.TELEPHONE,
+                UserProfileClaimUris.MOBILE,
+                UserProfileClaimUris.IM,
+                UserProfileClaimUris.URL
         };
         ClaimValue[] claimValues = ((RemoteUserStoreManagerServiceStub)serviceStub).getUserClaimValuesForClaims(username, claims, null);
         UserProfile userProfile = new UserProfile();
 
         for(int i=0;i<claimValues.length;i++){
-
             if(claimValues[i].getClaimURI().equals(UserProfileClaimUris.FIRST_NAME)){
                 userProfile.firstName = claimValues[i].getValue();
             }else if(claimValues[i].getClaimURI().equals(UserProfileClaimUris.LAST_NAME)){
@@ -95,9 +166,20 @@ public class UserStoreManagerServiceClient extends BaseServiceClient{
                 userProfile.emailAddress = claimValues[i].getValue();
             }else if(claimValues[i].getClaimURI().equals(UserProfileClaimUris.ORGANIZATION)){
                 userProfile.organization = claimValues[i].getValue();
+            }else if(claimValues[i].getClaimURI().equals(UserProfileClaimUris.ADDRESS)){
+                userProfile.address = claimValues[i].getValue();
+            }else if(claimValues[i].getClaimURI().equals(UserProfileClaimUris.COUNTRY)){
+                userProfile.country = claimValues[i].getValue();
+            }else if(claimValues[i].getClaimURI().equals(UserProfileClaimUris.TELEPHONE)){
+                userProfile.telephone = claimValues[i].getValue();
+            }else if(claimValues[i].getClaimURI().equals(UserProfileClaimUris.MOBILE)){
+                userProfile.mobile = claimValues[i].getValue();
+            }else if(claimValues[i].getClaimURI().equals(UserProfileClaimUris.IM)){
+                userProfile.im = claimValues[i].getValue();
+            }else if(claimValues[i].getClaimURI().equals(UserProfileClaimUris.URL)){
+                userProfile.url = claimValues[i].getValue();
             }
         }
-
         return userProfile;
     }
 

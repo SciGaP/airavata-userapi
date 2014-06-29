@@ -35,4 +35,16 @@ public class UserProfileClaimUris {
 
     public static final String ORGANIZATION = "http://wso2.org/claims/organization";
 
+    public static final String ADDRESS = "http://wso2.org/claims/streetaddress";
+
+    public static final String COUNTRY = "http://wso2.org/claims/country";
+
+    public static final String TELEPHONE = "http://wso2.org/claims/telephone";
+
+    public static final String MOBILE = "http://wso2.org/claims/mobile";
+
+    public static final String IM = "http://wso2.org/claims/im";
+
+    public static final String URL = "http://wso2.org/claims/url";
+
 }

@@ -79,7 +79,7 @@ public class UserAPIServerHandlerTest extends TestCase {
         userProfile.organization = "scigap";
 
         try{
-            userAPIServerHandler.createNewUser("test_user","abc123", userProfile, token);
+            userAPIServerHandler.createNewUser("test_user4","abc123", userProfile, token);
         }catch (Exception ex){
             exceptionThrown = true;
         }
@@ -91,13 +91,13 @@ public class UserAPIServerHandlerTest extends TestCase {
         testAdminLogin();
         boolean exceptionThrown = false;
         UserProfile userProfile = new UserProfile();
-        userProfile.firstName = "test_user";
-        userProfile.lastName = "test_user";
+        userProfile.firstName = "test";
+        userProfile.lastName = "test";
         userProfile.emailAddress = "test_user@scigap.org";
-        userProfile.organization = "scigap";
+        userProfile.organization = "";
 
         try{
-            userAPIServerHandler.updateUserProfile("test_user", userProfile, token);
+            userAPIServerHandler.updateUserProfile("admin", userProfile, token);
         }catch (Exception ex){
             exceptionThrown = true;
         }
@@ -107,7 +107,7 @@ public class UserAPIServerHandlerTest extends TestCase {
 
     public void testGetUserProfile() throws Exception{
         testAdminLogin();
-        UserProfile profile = userAPIServerHandler.getUserProfile("test_user", token);
+        UserProfile profile = userAPIServerHandler.getUserProfile("admin", token);
         Assert.assertNotNull(profile);
     }
 
