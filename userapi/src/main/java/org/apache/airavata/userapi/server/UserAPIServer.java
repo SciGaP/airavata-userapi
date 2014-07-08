@@ -47,16 +47,17 @@ public class UserAPIServer implements IServer{
 
     private ServerStatus status;
 
+    private ServerProperties properties;
+
     private TServer server;
 
     public UserAPIServer() {
         setStatus(ServerStatus.STOPPED);
+        properties = ServerProperties.getInstance();
     }
 
     public void startUserAPIServer(UserAPI.Processor<UserAPI.Iface> mockUserAPIServer) throws Exception {
         try {
-            ServerProperties properties = ServerProperties.getInstance();
-
             System.setProperty("javax.net.ssl.keyStore",properties.getProperty(Constants.KEY_STORE_NAME,"keystore.jks"));
             System.setProperty("javax.net.ssl.keyStoreType",properties.getProperty(Constants.KEY_STORE_TYPE,"JKS"));
             System.setProperty("javax.net.ssl.keyStorePassword", properties.getProperty(Constants.KEY_STORE_PWD,"scigap_admin"));
@@ -122,8 +123,11 @@ public class UserAPIServer implements IServer{
     @Override
     public void start() throws Exception {
         setStatus(ServerStatus.STARTING);
+        String isUrl = properties.getProperty(
+                Constants.WSO2_IS_URL,"https://idp.scigap.org:7443").toString();
         UserAPI.Processor<UserAPI.Iface> mockUserAPIServer =
-                new UserAPI.Processor<UserAPI.Iface>(new UserAPIServerHandler("https://idp.scigap.org:7443"));
+                new UserAPI.Processor<UserAPI.Iface>(
+                        new UserAPIServerHandler(isUrl));
         startUserAPIServer(mockUserAPIServer);
     }
 

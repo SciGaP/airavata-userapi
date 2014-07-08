@@ -22,6 +22,7 @@
 
 package org.apache.airavata.userapi.server.utils;
 
+import org.apache.airavata.userapi.common.utils.ServerProperties;
 import org.apache.airavata.userapi.error.AuthorizationException;
 import org.apache.commons.codec.binary.Base64;
 
@@ -40,11 +41,20 @@ public class TokenEncryptionUtil
     public static final String PASSWORD = "PASSWORD";
     public static final String TIMESTAMP = "TIMESTAMP";
 
-    private static byte[] key = {
-            0x74, 0x68, 0x64, 0x73, 0x49, 0x72, 0x41, 0x53, 0x65, 0x63, 0x72, 0x65, 0x74, 0x4b, 0x65, 0x79
-    };//"thisIsASecretKey";
+    private static byte[] key;
 
-    public static String encrypt(String username, String password) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    public TokenEncryptionUtil() {
+        ServerProperties properties = ServerProperties.getInstance();
+        String aesKey = properties.getProperty("AES_KEY", "qndAwER4h#ns(owe");
+
+        char[] charKeys = aesKey.toCharArray();
+        key = new byte[16];
+        for(int i=0;i<16;i++){
+            key[i] = (byte)charKeys[i];
+        }
+    }
+
+    public String encrypt(String username, String password) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
             String strToEncrypt = username+"\n"+password+"\n"+System.currentTimeMillis();
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             final SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
@@ -53,7 +63,7 @@ public class TokenEncryptionUtil
             return encryptedString;
     }
 
-    public static HashMap<String, String> decrypt(String strToDecrypt) throws AuthorizationException {
+    public HashMap<String, String> decrypt(String strToDecrypt) throws AuthorizationException {
         try{
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
             final SecretKeySpec secretKey = new SecretKeySpec(key, "AES");

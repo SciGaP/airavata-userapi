@@ -22,6 +22,7 @@
 package org.apache.airavata.userapi.server.clients;
 
 import org.apache.airavata.userapi.common.utils.Constants;
+import org.apache.airavata.userapi.common.utils.ServerProperties;
 import org.apache.airavata.userapi.error.AuthorizationException;
 import org.apache.airavata.userapi.server.utils.TokenEncryptionUtil;
 import org.apache.axis2.client.Options;
@@ -40,15 +41,18 @@ public class BaseServiceClient {
     protected void authenticateStubFromToken(String token) throws AuthorizationException {
         ServiceClient serviceClient;
         Options options;
+        TokenEncryptionUtil tokenEncryptionUtil = new TokenEncryptionUtil();
 
         serviceClient = serviceStub._getServiceClient();
         options = serviceClient.getOptions();
 
         HttpTransportProperties.Authenticator authenticator = new HttpTransportProperties.Authenticator();
-        HashMap<String, String> credentials = TokenEncryptionUtil.decrypt(token);
+        HashMap<String, String> credentials = tokenEncryptionUtil.decrypt(token);
 
         double issueTime = Long.parseLong(credentials.get(TokenEncryptionUtil.TIMESTAMP));
-        if(System.currentTimeMillis()-issueTime> Constants.TOKEN_LIFE_TIME){
+        ServerProperties properties = ServerProperties.getInstance();
+        Long tokenLifeTime = Long.parseLong(properties.getProperty(Constants.TOKEN_LIFE_TIME,"999999999"));
+        if(System.currentTimeMillis()-issueTime> tokenLifeTime){
             throw new AuthorizationException();
         }
         authenticator.setUsername(credentials.get(TokenEncryptionUtil.USERNAME));

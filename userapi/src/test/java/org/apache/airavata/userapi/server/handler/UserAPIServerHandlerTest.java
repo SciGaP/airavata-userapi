@@ -70,16 +70,27 @@ public class UserAPIServerHandlerTest extends TestCase {
     }
 
     public void testCreateNewUser() throws Exception {
+
         testAdminLogin();
+        if(userAPIServerHandler.checkUsernameExists("testUser", token)){
+            userAPIServerHandler.removeUser("testUser", token);
+        }
         boolean exceptionThrown = false;
+
         UserProfile userProfile = new UserProfile();
-        userProfile.firstName = "test_user";
-        userProfile.lastName = "test_user";
+        userProfile.firstName = "testuser";
+        userProfile.lastName = "testuser";
         userProfile.emailAddress = "test_user@scigap.org";
-        userProfile.organization = "scigap";
+        /*userProfile.organization = "scigap";
+        userProfile.address = "address";
+        userProfile.country = "dfadf";
+        userProfile.telephone = "232323";
+        userProfile.mobile = "23232342";
+        userProfile.im = "ssdASsSD";
+        userProfile.url = "eefer.com";*/
 
         try{
-            userAPIServerHandler.createNewUser("test_user4","abc123", userProfile, token);
+            userAPIServerHandler.createNewUser("testUser","abc123", userProfile, token);
         }catch (Exception ex){
             exceptionThrown = true;
         }
@@ -91,10 +102,9 @@ public class UserAPIServerHandlerTest extends TestCase {
         testAdminLogin();
         boolean exceptionThrown = false;
         UserProfile userProfile = new UserProfile();
-        userProfile.firstName = "test";
-        userProfile.lastName = "test";
-        userProfile.emailAddress = "test_user@scigap.org";
-        userProfile.organization = "";
+        userProfile.firstName = "admin";
+        userProfile.lastName = "admin";
+        userProfile.emailAddress = "admin@phprg.scigap.org";
 
         try{
             userAPIServerHandler.updateUserProfile("admin", userProfile, token);
@@ -138,7 +148,7 @@ public class UserAPIServerHandlerTest extends TestCase {
 
     public void testAuthenticateUser() throws Exception {
         testAdminLogin();
-        boolean isAuthentic = userAPIServerHandler.authenticateUser("scigap_admin","sci9067@min",token);
+        boolean isAuthentic = userAPIServerHandler.authenticateUser("admin","phprg9067@min",token);
         Assert.assertTrue(isAuthentic);
     }
 

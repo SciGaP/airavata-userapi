@@ -44,10 +44,13 @@ public class LoginAdminServiceClient extends BaseServiceClient{
 
     public String authenticate(String userName, String password) throws Exception{
         String encryptedToken = null;
+
+        TokenEncryptionUtil tokenEncryptionUtil = new TokenEncryptionUtil();
+
         if (((AuthenticationAdminStub)serviceStub).login(userName, password, "localhost")) {
 
             try {
-                encryptedToken = TokenEncryptionUtil.encrypt(userName, password);
+                encryptedToken = tokenEncryptionUtil.encrypt(userName, password);
             } catch (NoSuchPaddingException e) {
                 e.printStackTrace();
                 throw new Exception("Unable to authenticate Admin");
