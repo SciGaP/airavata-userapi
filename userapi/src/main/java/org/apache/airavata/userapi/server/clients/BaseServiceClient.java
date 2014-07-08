@@ -53,7 +53,7 @@ public class BaseServiceClient {
         ServerProperties properties = ServerProperties.getInstance();
         Long tokenLifeTime = Long.parseLong(properties.getProperty(Constants.TOKEN_LIFE_TIME,"999999999"));
         if(System.currentTimeMillis()-issueTime> tokenLifeTime){
-            throw new AuthorizationException();
+            throw new AuthorizationException("Token Expired!");
         }
         authenticator.setUsername(credentials.get(TokenEncryptionUtil.USERNAME));
         authenticator.setPassword(credentials.get(TokenEncryptionUtil.PASSWORD));

@@ -67,7 +67,7 @@ public class UserAPIServer implements IServer{
             System.setProperty("javax.net.ssl.trustStorePassword", properties.getProperty(Constants.KEY_STORE_PWD,"scigap_admin"));
 
 
-            final int serverPort = Integer.parseInt(properties.getProperty(Constants.USER_API_SERVER_PORT, "8932"));
+            final int serverPort = Integer.parseInt(properties.getProperty(Constants.USER_API_SERVER_PORT, "7430"));
             final String serverHost = properties.getProperty(Constants.USER_API_SERVER_HOST, null);
 
             TServerTransport serverTransport;
