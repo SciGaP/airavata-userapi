@@ -33,6 +33,7 @@ import org.apache.airavata.userapi.models.APIPermissions;
 import org.apache.airavata.userapi.models.AuthenticationResponse;
 import org.apache.airavata.userapi.models.UserProfile;
 import org.apache.airavata.userapi.server.clients.LoginAdminServiceClient;
+import org.apache.airavata.userapi.server.clients.RemoteAuthorizationManagerClient;
 import org.apache.airavata.userapi.server.clients.UserStoreManagerServiceClient;
 import org.apache.thrift.TException;
 import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
@@ -48,11 +49,13 @@ public class UserAPIServerHandler implements UserAPI.Iface{
 
     private LoginAdminServiceClient loginAdminServiceClient;
     private UserStoreManagerServiceClient userStoreManagerServiceClient;
+    private RemoteAuthorizationManagerClient remoteAuthorizationManagerClient;
 
     public UserAPIServerHandler(String url) throws RemoteException, UserStoreExceptionException {
         this.backendUrl = url;
         this.loginAdminServiceClient = new LoginAdminServiceClient(backendUrl);
         this.userStoreManagerServiceClient = new UserStoreManagerServiceClient(backendUrl);
+        this.remoteAuthorizationManagerClient = new RemoteAuthorizationManagerClient(backendUrl);
     }
 
     @Override
@@ -169,6 +172,8 @@ public class UserAPIServerHandler implements UserAPI.Iface{
         boolean isAuthentic = false;
         try {
             isAuthentic = userStoreManagerServiceClient.authenticateUser(userName,password,token);
+            APIPermissions apiPermissions = remoteAuthorizationManagerClient.getUserPermissions(userName,token);
+            return apiPermissions;
         } catch (RemoteException e) {
             e.printStackTrace();
             throw new UserAPISystemException();
@@ -176,7 +181,6 @@ public class UserAPIServerHandler implements UserAPI.Iface{
             e.printStackTrace();
             throw new UserAPISystemException();
         }
-        return null;
     }
 
     @Override
@@ -232,7 +236,7 @@ public class UserAPIServerHandler implements UserAPI.Iface{
     }
 
     @Override
-    public List<String> getRoleNames(String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
+    public List<String> getAllRoleNames(String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
         try {
             return userStoreManagerServiceClient.getRoleNames(token);
         } catch (RemoteException e) {
@@ -246,17 +250,28 @@ public class UserAPIServerHandler implements UserAPI.Iface{
 
     @Override
     public APIPermissions getUserPermissions(String username, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-        return null;
-    }
-
-    @Override
-    public APIPermissions getRolePermissions(String roleName, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-        return null;
+        try {
+            return remoteAuthorizationManagerClient.getUserPermissions(username,token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
     }
 
     @Override
     public boolean checkPermission(String username, String permissionString, String token) throws InvalidRequestException, AuthorizationException, UserAPISystemException, TException {
-        return false;
+        try {
+            return remoteAuthorizationManagerClient.checkPermission(username,permissionString,token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        } catch (UserStoreExceptionException e) {
+            e.printStackTrace();
+            throw new UserAPISystemException();
+        }
     }
 
 

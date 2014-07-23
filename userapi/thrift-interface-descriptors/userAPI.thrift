@@ -190,7 +190,7 @@ service UserAPI {
     * Get list of all roles
     *
   */
-  list<string> getRoleNames (1: required string token)
+  list<string> getAllRoleNames (1: required string token)
             throws (1: userAPIErrors.InvalidRequestException ire,
                     2: userAPIErrors.AuthorizationException are,
                     3: userAPIErrors.UserAPISystemException ase)
@@ -204,14 +204,6 @@ service UserAPI {
                       2: userAPIErrors.AuthorizationException are,
                       3: userAPIErrors.UserAPISystemException ase)
 
-  /**
-        * Get permission for role
-        *
-      */
-      userAPIModels.APIPermissions getRolePermissions (1: required string roleName, 2: required string token)
-                throws (1: userAPIErrors.InvalidRequestException ire,
-                        2: userAPIErrors.AuthorizationException are,
-                        3: userAPIErrors.UserAPISystemException ase)
 
   /**
         * Check permission for permission string

@@ -12,6 +12,7 @@ import org.apache.thrift.scheme.StandardScheme;
 
 import org.apache.thrift.scheme.TupleScheme;
 import org.apache.thrift.protocol.TTupleProtocol;
+import org.apache.thrift.protocol.TProtocolException;
 import org.apache.thrift.EncodingUtils;
 import org.apache.thrift.TException;
 import org.apache.thrift.async.AsyncMethodCallback;
@@ -21,9 +22,13 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.EnumMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.EnumSet;
 import java.util.Collections;
 import java.util.BitSet;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import javax.annotation.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,7 +166,7 @@ public class UserAPI {
      * 
      * @param token
      */
-    public List<String> getRoleNames(String token) throws org.apache.airavata.userapi.error.InvalidRequestException, org.apache.airavata.userapi.error.AuthorizationException, org.apache.airavata.userapi.error.UserAPISystemException, org.apache.thrift.TException;
+    public List<String> getAllRoleNames(String token) throws org.apache.airavata.userapi.error.InvalidRequestException, org.apache.airavata.userapi.error.AuthorizationException, org.apache.airavata.userapi.error.UserAPISystemException, org.apache.thrift.TException;
 
     /**
      * Get permission for user
@@ -171,15 +176,6 @@ public class UserAPI {
      * @param token
      */
     public org.apache.airavata.userapi.models.APIPermissions getUserPermissions(String username, String token) throws org.apache.airavata.userapi.error.InvalidRequestException, org.apache.airavata.userapi.error.AuthorizationException, org.apache.airavata.userapi.error.UserAPISystemException, org.apache.thrift.TException;
-
-    /**
-     * Get permission for role
-     * 
-     * 
-     * @param roleName
-     * @param token
-     */
-    public org.apache.airavata.userapi.models.APIPermissions getRolePermissions(String roleName, String token) throws org.apache.airavata.userapi.error.InvalidRequestException, org.apache.airavata.userapi.error.AuthorizationException, org.apache.airavata.userapi.error.UserAPISystemException, org.apache.thrift.TException;
 
     /**
      * Check permission for permission string
@@ -221,11 +217,9 @@ public class UserAPI {
 
     public void getRoleListOfUser(String username, String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void getRoleNames(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void getAllRoleNames(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void getUserPermissions(String username, String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
-
-    public void getRolePermissions(String roleName, String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void checkPermission(String username, String permissionString, String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -665,23 +659,23 @@ public class UserAPI {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getRoleListOfUser failed: unknown result");
     }
 
-    public List<String> getRoleNames(String token) throws org.apache.airavata.userapi.error.InvalidRequestException, org.apache.airavata.userapi.error.AuthorizationException, org.apache.airavata.userapi.error.UserAPISystemException, org.apache.thrift.TException
+    public List<String> getAllRoleNames(String token) throws org.apache.airavata.userapi.error.InvalidRequestException, org.apache.airavata.userapi.error.AuthorizationException, org.apache.airavata.userapi.error.UserAPISystemException, org.apache.thrift.TException
     {
-      send_getRoleNames(token);
-      return recv_getRoleNames();
+      send_getAllRoleNames(token);
+      return recv_getAllRoleNames();
     }
 
-    public void send_getRoleNames(String token) throws org.apache.thrift.TException
+    public void send_getAllRoleNames(String token) throws org.apache.thrift.TException
     {
-      getRoleNames_args args = new getRoleNames_args();
+      getAllRoleNames_args args = new getAllRoleNames_args();
       args.setToken(token);
-      sendBase("getRoleNames", args);
+      sendBase("getAllRoleNames", args);
     }
 
-    public List<String> recv_getRoleNames() throws org.apache.airavata.userapi.error.InvalidRequestException, org.apache.airavata.userapi.error.AuthorizationException, org.apache.airavata.userapi.error.UserAPISystemException, org.apache.thrift.TException
+    public List<String> recv_getAllRoleNames() throws org.apache.airavata.userapi.error.InvalidRequestException, org.apache.airavata.userapi.error.AuthorizationException, org.apache.airavata.userapi.error.UserAPISystemException, org.apache.thrift.TException
     {
-      getRoleNames_result result = new getRoleNames_result();
-      receiveBase(result, "getRoleNames");
+      getAllRoleNames_result result = new getAllRoleNames_result();
+      receiveBase(result, "getAllRoleNames");
       if (result.isSetSuccess()) {
         return result.success;
       }
@@ -694,7 +688,7 @@ public class UserAPI {
       if (result.ase != null) {
         throw result.ase;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getRoleNames failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getAllRoleNames failed: unknown result");
     }
 
     public org.apache.airavata.userapi.models.APIPermissions getUserPermissions(String username, String token) throws org.apache.airavata.userapi.error.InvalidRequestException, org.apache.airavata.userapi.error.AuthorizationException, org.apache.airavata.userapi.error.UserAPISystemException, org.apache.thrift.TException
@@ -728,39 +722,6 @@ public class UserAPI {
         throw result.ase;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getUserPermissions failed: unknown result");
-    }
-
-    public org.apache.airavata.userapi.models.APIPermissions getRolePermissions(String roleName, String token) throws org.apache.airavata.userapi.error.InvalidRequestException, org.apache.airavata.userapi.error.AuthorizationException, org.apache.airavata.userapi.error.UserAPISystemException, org.apache.thrift.TException
-    {
-      send_getRolePermissions(roleName, token);
-      return recv_getRolePermissions();
-    }
-
-    public void send_getRolePermissions(String roleName, String token) throws org.apache.thrift.TException
-    {
-      getRolePermissions_args args = new getRolePermissions_args();
-      args.setRoleName(roleName);
-      args.setToken(token);
-      sendBase("getRolePermissions", args);
-    }
-
-    public org.apache.airavata.userapi.models.APIPermissions recv_getRolePermissions() throws org.apache.airavata.userapi.error.InvalidRequestException, org.apache.airavata.userapi.error.AuthorizationException, org.apache.airavata.userapi.error.UserAPISystemException, org.apache.thrift.TException
-    {
-      getRolePermissions_result result = new getRolePermissions_result();
-      receiveBase(result, "getRolePermissions");
-      if (result.isSetSuccess()) {
-        return result.success;
-      }
-      if (result.ire != null) {
-        throw result.ire;
-      }
-      if (result.are != null) {
-        throw result.are;
-      }
-      if (result.ase != null) {
-        throw result.ase;
-      }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getRolePermissions failed: unknown result");
     }
 
     public boolean checkPermission(String username, String permissionString, String token) throws org.apache.airavata.userapi.error.InvalidRequestException, org.apache.airavata.userapi.error.AuthorizationException, org.apache.airavata.userapi.error.UserAPISystemException, org.apache.thrift.TException
@@ -1288,23 +1249,23 @@ public class UserAPI {
       }
     }
 
-    public void getRoleNames(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void getAllRoleNames(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getRoleNames_call method_call = new getRoleNames_call(token, resultHandler, this, ___protocolFactory, ___transport);
+      getAllRoleNames_call method_call = new getAllRoleNames_call(token, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class getRoleNames_call extends org.apache.thrift.async.TAsyncMethodCall {
+    public static class getAllRoleNames_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String token;
-      public getRoleNames_call(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public getAllRoleNames_call(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.token = token;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getRoleNames", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        getRoleNames_args args = new getRoleNames_args();
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getAllRoleNames", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        getAllRoleNames_args args = new getAllRoleNames_args();
         args.setToken(token);
         args.write(prot);
         prot.writeMessageEnd();
@@ -1316,7 +1277,7 @@ public class UserAPI {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_getRoleNames();
+        return (new Client(prot)).recv_getAllRoleNames();
       }
     }
 
@@ -1352,41 +1313,6 @@ public class UserAPI {
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
         return (new Client(prot)).recv_getUserPermissions();
-      }
-    }
-
-    public void getRolePermissions(String roleName, String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
-      checkReady();
-      getRolePermissions_call method_call = new getRolePermissions_call(roleName, token, resultHandler, this, ___protocolFactory, ___transport);
-      this.___currentMethod = method_call;
-      ___manager.call(method_call);
-    }
-
-    public static class getRolePermissions_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private String roleName;
-      private String token;
-      public getRolePermissions_call(String roleName, String token, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
-        this.roleName = roleName;
-        this.token = token;
-      }
-
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getRolePermissions", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        getRolePermissions_args args = new getRolePermissions_args();
-        args.setRoleName(roleName);
-        args.setToken(token);
-        args.write(prot);
-        prot.writeMessageEnd();
-      }
-
-      public org.apache.airavata.userapi.models.APIPermissions getResult() throws org.apache.airavata.userapi.error.InvalidRequestException, org.apache.airavata.userapi.error.AuthorizationException, org.apache.airavata.userapi.error.UserAPISystemException, org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
-        }
-        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
-        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_getRolePermissions();
       }
     }
 
@@ -1454,9 +1380,8 @@ public class UserAPI {
       processMap.put("removeUserFromRole", new removeUserFromRole());
       processMap.put("getUserListOfRole", new getUserListOfRole());
       processMap.put("getRoleListOfUser", new getRoleListOfUser());
-      processMap.put("getRoleNames", new getRoleNames());
+      processMap.put("getAllRoleNames", new getAllRoleNames());
       processMap.put("getUserPermissions", new getUserPermissions());
-      processMap.put("getRolePermissions", new getRolePermissions());
       processMap.put("checkPermission", new checkPermission());
       return processMap;
     }
@@ -1824,23 +1749,23 @@ public class UserAPI {
       }
     }
 
-    public static class getRoleNames<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getRoleNames_args> {
-      public getRoleNames() {
-        super("getRoleNames");
+    public static class getAllRoleNames<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getAllRoleNames_args> {
+      public getAllRoleNames() {
+        super("getAllRoleNames");
       }
 
-      public getRoleNames_args getEmptyArgsInstance() {
-        return new getRoleNames_args();
+      public getAllRoleNames_args getEmptyArgsInstance() {
+        return new getAllRoleNames_args();
       }
 
       protected boolean isOneway() {
         return false;
       }
 
-      public getRoleNames_result getResult(I iface, getRoleNames_args args) throws org.apache.thrift.TException {
-        getRoleNames_result result = new getRoleNames_result();
+      public getAllRoleNames_result getResult(I iface, getAllRoleNames_args args) throws org.apache.thrift.TException {
+        getAllRoleNames_result result = new getAllRoleNames_result();
         try {
-          result.success = iface.getRoleNames(args.token);
+          result.success = iface.getAllRoleNames(args.token);
         } catch (org.apache.airavata.userapi.error.InvalidRequestException ire) {
           result.ire = ire;
         } catch (org.apache.airavata.userapi.error.AuthorizationException are) {
@@ -1869,34 +1794,6 @@ public class UserAPI {
         getUserPermissions_result result = new getUserPermissions_result();
         try {
           result.success = iface.getUserPermissions(args.username, args.token);
-        } catch (org.apache.airavata.userapi.error.InvalidRequestException ire) {
-          result.ire = ire;
-        } catch (org.apache.airavata.userapi.error.AuthorizationException are) {
-          result.are = are;
-        } catch (org.apache.airavata.userapi.error.UserAPISystemException ase) {
-          result.ase = ase;
-        }
-        return result;
-      }
-    }
-
-    public static class getRolePermissions<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getRolePermissions_args> {
-      public getRolePermissions() {
-        super("getRolePermissions");
-      }
-
-      public getRolePermissions_args getEmptyArgsInstance() {
-        return new getRolePermissions_args();
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public getRolePermissions_result getResult(I iface, getRolePermissions_args args) throws org.apache.thrift.TException {
-        getRolePermissions_result result = new getRolePermissions_result();
-        try {
-          result.success = iface.getRolePermissions(args.roleName, args.token);
         } catch (org.apache.airavata.userapi.error.InvalidRequestException ire) {
           result.ire = ire;
         } catch (org.apache.airavata.userapi.error.AuthorizationException are) {
@@ -1963,9 +1860,8 @@ public class UserAPI {
       processMap.put("removeUserFromRole", new removeUserFromRole());
       processMap.put("getUserListOfRole", new getUserListOfRole());
       processMap.put("getRoleListOfUser", new getRoleListOfUser());
-      processMap.put("getRoleNames", new getRoleNames());
+      processMap.put("getAllRoleNames", new getAllRoleNames());
       processMap.put("getUserPermissions", new getUserPermissions());
-      processMap.put("getRolePermissions", new getRolePermissions());
       processMap.put("checkPermission", new checkPermission());
       return processMap;
     }
@@ -2831,20 +2727,20 @@ public class UserAPI {
       }
     }
 
-    public static class getRoleNames<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getRoleNames_args, List<String>> {
-      public getRoleNames() {
-        super("getRoleNames");
+    public static class getAllRoleNames<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getAllRoleNames_args, List<String>> {
+      public getAllRoleNames() {
+        super("getAllRoleNames");
       }
 
-      public getRoleNames_args getEmptyArgsInstance() {
-        return new getRoleNames_args();
+      public getAllRoleNames_args getEmptyArgsInstance() {
+        return new getAllRoleNames_args();
       }
 
       public AsyncMethodCallback<List<String>> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new AsyncMethodCallback<List<String>>() { 
           public void onComplete(List<String> o) {
-            getRoleNames_result result = new getRoleNames_result();
+            getAllRoleNames_result result = new getAllRoleNames_result();
             result.success = o;
             try {
               fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
@@ -2857,7 +2753,7 @@ public class UserAPI {
           public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
-            getRoleNames_result result = new getRoleNames_result();
+            getAllRoleNames_result result = new getAllRoleNames_result();
             if (e instanceof org.apache.airavata.userapi.error.InvalidRequestException) {
                         result.ire = (org.apache.airavata.userapi.error.InvalidRequestException) e;
                         result.setIreIsSet(true);
@@ -2893,8 +2789,8 @@ public class UserAPI {
         return false;
       }
 
-      public void start(I iface, getRoleNames_args args, org.apache.thrift.async.AsyncMethodCallback<List<String>> resultHandler) throws TException {
-        iface.getRoleNames(args.token,resultHandler);
+      public void start(I iface, getAllRoleNames_args args, org.apache.thrift.async.AsyncMethodCallback<List<String>> resultHandler) throws TException {
+        iface.getAllRoleNames(args.token,resultHandler);
       }
     }
 
@@ -2962,73 +2858,6 @@ public class UserAPI {
 
       public void start(I iface, getUserPermissions_args args, org.apache.thrift.async.AsyncMethodCallback<org.apache.airavata.userapi.models.APIPermissions> resultHandler) throws TException {
         iface.getUserPermissions(args.username, args.token,resultHandler);
-      }
-    }
-
-    public static class getRolePermissions<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getRolePermissions_args, org.apache.airavata.userapi.models.APIPermissions> {
-      public getRolePermissions() {
-        super("getRolePermissions");
-      }
-
-      public getRolePermissions_args getEmptyArgsInstance() {
-        return new getRolePermissions_args();
-      }
-
-      public AsyncMethodCallback<org.apache.airavata.userapi.models.APIPermissions> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
-        final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new AsyncMethodCallback<org.apache.airavata.userapi.models.APIPermissions>() { 
-          public void onComplete(org.apache.airavata.userapi.models.APIPermissions o) {
-            getRolePermissions_result result = new getRolePermissions_result();
-            result.success = o;
-            try {
-              fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
-              return;
-            } catch (Exception e) {
-              LOGGER.error("Exception writing to internal frame buffer", e);
-            }
-            fb.close();
-          }
-          public void onError(Exception e) {
-            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
-            org.apache.thrift.TBase msg;
-            getRolePermissions_result result = new getRolePermissions_result();
-            if (e instanceof org.apache.airavata.userapi.error.InvalidRequestException) {
-                        result.ire = (org.apache.airavata.userapi.error.InvalidRequestException) e;
-                        result.setIreIsSet(true);
-                        msg = result;
-            }
-            else             if (e instanceof org.apache.airavata.userapi.error.AuthorizationException) {
-                        result.are = (org.apache.airavata.userapi.error.AuthorizationException) e;
-                        result.setAreIsSet(true);
-                        msg = result;
-            }
-            else             if (e instanceof org.apache.airavata.userapi.error.UserAPISystemException) {
-                        result.ase = (org.apache.airavata.userapi.error.UserAPISystemException) e;
-                        result.setAseIsSet(true);
-                        msg = result;
-            }
-             else 
-            {
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
-            }
-            try {
-              fcall.sendResponse(fb,msg,msgType,seqid);
-              return;
-            } catch (Exception ex) {
-              LOGGER.error("Exception writing to internal frame buffer", ex);
-            }
-            fb.close();
-          }
-        };
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public void start(I iface, getRolePermissions_args args, org.apache.thrift.async.AsyncMethodCallback<org.apache.airavata.userapi.models.APIPermissions> resultHandler) throws TException {
-        iface.getRolePermissions(args.roleName, args.token,resultHandler);
       }
     }
 
@@ -17870,15 +17699,15 @@ public class UserAPI {
 
   }
 
-  public static class getRoleNames_args implements org.apache.thrift.TBase<getRoleNames_args, getRoleNames_args._Fields>, java.io.Serializable, Cloneable, Comparable<getRoleNames_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getRoleNames_args");
+  public static class getAllRoleNames_args implements org.apache.thrift.TBase<getAllRoleNames_args, getAllRoleNames_args._Fields>, java.io.Serializable, Cloneable, Comparable<getAllRoleNames_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getAllRoleNames_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new getRoleNames_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getRoleNames_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new getAllRoleNames_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new getAllRoleNames_argsTupleSchemeFactory());
     }
 
     public String token; // required
@@ -17948,13 +17777,13 @@ public class UserAPI {
       tmpMap.put(_Fields.TOKEN, new org.apache.thrift.meta_data.FieldMetaData("token", org.apache.thrift.TFieldRequirementType.REQUIRED, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getRoleNames_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getAllRoleNames_args.class, metaDataMap);
     }
 
-    public getRoleNames_args() {
+    public getAllRoleNames_args() {
     }
 
-    public getRoleNames_args(
+    public getAllRoleNames_args(
       String token)
     {
       this();
@@ -17964,14 +17793,14 @@ public class UserAPI {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public getRoleNames_args(getRoleNames_args other) {
+    public getAllRoleNames_args(getAllRoleNames_args other) {
       if (other.isSetToken()) {
         this.token = other.token;
       }
     }
 
-    public getRoleNames_args deepCopy() {
-      return new getRoleNames_args(this);
+    public getAllRoleNames_args deepCopy() {
+      return new getAllRoleNames_args(this);
     }
 
     @Override
@@ -17983,7 +17812,7 @@ public class UserAPI {
       return this.token;
     }
 
-    public getRoleNames_args setToken(String token) {
+    public getAllRoleNames_args setToken(String token) {
       this.token = token;
       return this;
     }
@@ -18042,12 +17871,12 @@ public class UserAPI {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof getRoleNames_args)
-        return this.equals((getRoleNames_args)that);
+      if (that instanceof getAllRoleNames_args)
+        return this.equals((getAllRoleNames_args)that);
       return false;
     }
 
-    public boolean equals(getRoleNames_args that) {
+    public boolean equals(getAllRoleNames_args that) {
       if (that == null)
         return false;
 
@@ -18076,7 +17905,7 @@ public class UserAPI {
     }
 
     @Override
-    public int compareTo(getRoleNames_args other) {
+    public int compareTo(getAllRoleNames_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -18110,7 +17939,7 @@ public class UserAPI {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("getRoleNames_args(");
+      StringBuilder sb = new StringBuilder("getAllRoleNames_args(");
       boolean first = true;
 
       sb.append("token:");
@@ -18148,15 +17977,15 @@ public class UserAPI {
       }
     }
 
-    private static class getRoleNames_argsStandardSchemeFactory implements SchemeFactory {
-      public getRoleNames_argsStandardScheme getScheme() {
-        return new getRoleNames_argsStandardScheme();
+    private static class getAllRoleNames_argsStandardSchemeFactory implements SchemeFactory {
+      public getAllRoleNames_argsStandardScheme getScheme() {
+        return new getAllRoleNames_argsStandardScheme();
       }
     }
 
-    private static class getRoleNames_argsStandardScheme extends StandardScheme<getRoleNames_args> {
+    private static class getAllRoleNames_argsStandardScheme extends StandardScheme<getAllRoleNames_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getRoleNames_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getAllRoleNames_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -18185,7 +18014,7 @@ public class UserAPI {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getRoleNames_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getAllRoleNames_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -18200,22 +18029,22 @@ public class UserAPI {
 
     }
 
-    private static class getRoleNames_argsTupleSchemeFactory implements SchemeFactory {
-      public getRoleNames_argsTupleScheme getScheme() {
-        return new getRoleNames_argsTupleScheme();
+    private static class getAllRoleNames_argsTupleSchemeFactory implements SchemeFactory {
+      public getAllRoleNames_argsTupleScheme getScheme() {
+        return new getAllRoleNames_argsTupleScheme();
       }
     }
 
-    private static class getRoleNames_argsTupleScheme extends TupleScheme<getRoleNames_args> {
+    private static class getAllRoleNames_argsTupleScheme extends TupleScheme<getAllRoleNames_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getRoleNames_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getAllRoleNames_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeString(struct.token);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getRoleNames_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getAllRoleNames_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.token = iprot.readString();
         struct.setTokenIsSet(true);
@@ -18224,8 +18053,8 @@ public class UserAPI {
 
   }
 
-  public static class getRoleNames_result implements org.apache.thrift.TBase<getRoleNames_result, getRoleNames_result._Fields>, java.io.Serializable, Cloneable, Comparable<getRoleNames_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getRoleNames_result");
+  public static class getAllRoleNames_result implements org.apache.thrift.TBase<getAllRoleNames_result, getAllRoleNames_result._Fields>, java.io.Serializable, Cloneable, Comparable<getAllRoleNames_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getAllRoleNames_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.LIST, (short)0);
     private static final org.apache.thrift.protocol.TField IRE_FIELD_DESC = new org.apache.thrift.protocol.TField("ire", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -18234,8 +18063,8 @@ public class UserAPI {
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new getRoleNames_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getRoleNames_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new getAllRoleNames_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new getAllRoleNames_resultTupleSchemeFactory());
     }
 
     public List<String> success; // required
@@ -18324,13 +18153,13 @@ public class UserAPI {
       tmpMap.put(_Fields.ASE, new org.apache.thrift.meta_data.FieldMetaData("ase", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getRoleNames_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getAllRoleNames_result.class, metaDataMap);
     }
 
-    public getRoleNames_result() {
+    public getAllRoleNames_result() {
     }
 
-    public getRoleNames_result(
+    public getAllRoleNames_result(
       List<String> success,
       org.apache.airavata.userapi.error.InvalidRequestException ire,
       org.apache.airavata.userapi.error.AuthorizationException are,
@@ -18346,7 +18175,7 @@ public class UserAPI {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public getRoleNames_result(getRoleNames_result other) {
+    public getAllRoleNames_result(getAllRoleNames_result other) {
       if (other.isSetSuccess()) {
         List<String> __this__success = new ArrayList<String>(other.success);
         this.success = __this__success;
@@ -18362,8 +18191,8 @@ public class UserAPI {
       }
     }
 
-    public getRoleNames_result deepCopy() {
-      return new getRoleNames_result(this);
+    public getAllRoleNames_result deepCopy() {
+      return new getAllRoleNames_result(this);
     }
 
     @Override
@@ -18393,7 +18222,7 @@ public class UserAPI {
       return this.success;
     }
 
-    public getRoleNames_result setSuccess(List<String> success) {
+    public getAllRoleNames_result setSuccess(List<String> success) {
       this.success = success;
       return this;
     }
@@ -18417,7 +18246,7 @@ public class UserAPI {
       return this.ire;
     }
 
-    public getRoleNames_result setIre(org.apache.airavata.userapi.error.InvalidRequestException ire) {
+    public getAllRoleNames_result setIre(org.apache.airavata.userapi.error.InvalidRequestException ire) {
       this.ire = ire;
       return this;
     }
@@ -18441,7 +18270,7 @@ public class UserAPI {
       return this.are;
     }
 
-    public getRoleNames_result setAre(org.apache.airavata.userapi.error.AuthorizationException are) {
+    public getAllRoleNames_result setAre(org.apache.airavata.userapi.error.AuthorizationException are) {
       this.are = are;
       return this;
     }
@@ -18465,7 +18294,7 @@ public class UserAPI {
       return this.ase;
     }
 
-    public getRoleNames_result setAse(org.apache.airavata.userapi.error.UserAPISystemException ase) {
+    public getAllRoleNames_result setAse(org.apache.airavata.userapi.error.UserAPISystemException ase) {
       this.ase = ase;
       return this;
     }
@@ -18563,12 +18392,12 @@ public class UserAPI {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof getRoleNames_result)
-        return this.equals((getRoleNames_result)that);
+      if (that instanceof getAllRoleNames_result)
+        return this.equals((getAllRoleNames_result)that);
       return false;
     }
 
-    public boolean equals(getRoleNames_result that) {
+    public boolean equals(getAllRoleNames_result that) {
       if (that == null)
         return false;
 
@@ -18639,7 +18468,7 @@ public class UserAPI {
     }
 
     @Override
-    public int compareTo(getRoleNames_result other) {
+    public int compareTo(getAllRoleNames_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -18703,7 +18532,7 @@ public class UserAPI {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("getRoleNames_result(");
+      StringBuilder sb = new StringBuilder("getAllRoleNames_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -18762,15 +18591,15 @@ public class UserAPI {
       }
     }
 
-    private static class getRoleNames_resultStandardSchemeFactory implements SchemeFactory {
-      public getRoleNames_resultStandardScheme getScheme() {
-        return new getRoleNames_resultStandardScheme();
+    private static class getAllRoleNames_resultStandardSchemeFactory implements SchemeFactory {
+      public getAllRoleNames_resultStandardScheme getScheme() {
+        return new getAllRoleNames_resultStandardScheme();
       }
     }
 
-    private static class getRoleNames_resultStandardScheme extends StandardScheme<getRoleNames_result> {
+    private static class getAllRoleNames_resultStandardScheme extends StandardScheme<getAllRoleNames_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getRoleNames_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getAllRoleNames_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -18836,7 +18665,7 @@ public class UserAPI {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getRoleNames_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getAllRoleNames_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -18873,16 +18702,16 @@ public class UserAPI {
 
     }
 
-    private static class getRoleNames_resultTupleSchemeFactory implements SchemeFactory {
-      public getRoleNames_resultTupleScheme getScheme() {
-        return new getRoleNames_resultTupleScheme();
+    private static class getAllRoleNames_resultTupleSchemeFactory implements SchemeFactory {
+      public getAllRoleNames_resultTupleScheme getScheme() {
+        return new getAllRoleNames_resultTupleScheme();
       }
     }
 
-    private static class getRoleNames_resultTupleScheme extends TupleScheme<getRoleNames_result> {
+    private static class getAllRoleNames_resultTupleScheme extends TupleScheme<getAllRoleNames_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getRoleNames_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getAllRoleNames_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -18919,7 +18748,7 @@ public class UserAPI {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getRoleNames_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getAllRoleNames_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
@@ -20070,1148 +19899,6 @@ public class UserAPI {
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getUserPermissions_result struct) throws org.apache.thrift.TException {
-        TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(4);
-        if (incoming.get(0)) {
-          struct.success = new org.apache.airavata.userapi.models.APIPermissions();
-          struct.success.read(iprot);
-          struct.setSuccessIsSet(true);
-        }
-        if (incoming.get(1)) {
-          struct.ire = new org.apache.airavata.userapi.error.InvalidRequestException();
-          struct.ire.read(iprot);
-          struct.setIreIsSet(true);
-        }
-        if (incoming.get(2)) {
-          struct.are = new org.apache.airavata.userapi.error.AuthorizationException();
-          struct.are.read(iprot);
-          struct.setAreIsSet(true);
-        }
-        if (incoming.get(3)) {
-          struct.ase = new org.apache.airavata.userapi.error.UserAPISystemException();
-          struct.ase.read(iprot);
-          struct.setAseIsSet(true);
-        }
-      }
-    }
-
-  }
-
-  public static class getRolePermissions_args implements org.apache.thrift.TBase<getRolePermissions_args, getRolePermissions_args._Fields>, java.io.Serializable, Cloneable, Comparable<getRolePermissions_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getRolePermissions_args");
-
-    private static final org.apache.thrift.protocol.TField ROLE_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("roleName", org.apache.thrift.protocol.TType.STRING, (short)1);
-    private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)2);
-
-    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
-    static {
-      schemes.put(StandardScheme.class, new getRolePermissions_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getRolePermissions_argsTupleSchemeFactory());
-    }
-
-    public String roleName; // required
-    public String token; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      ROLE_NAME((short)1, "roleName"),
-      TOKEN((short)2, "token");
-
-      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 1: // ROLE_NAME
-            return ROLE_NAME;
-          case 2: // TOKEN
-            return TOKEN;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.ROLE_NAME, new org.apache.thrift.meta_data.FieldMetaData("roleName", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.TOKEN, new org.apache.thrift.meta_data.FieldMetaData("token", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getRolePermissions_args.class, metaDataMap);
-    }
-
-    public getRolePermissions_args() {
-    }
-
-    public getRolePermissions_args(
-      String roleName,
-      String token)
-    {
-      this();
-      this.roleName = roleName;
-      this.token = token;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public getRolePermissions_args(getRolePermissions_args other) {
-      if (other.isSetRoleName()) {
-        this.roleName = other.roleName;
-      }
-      if (other.isSetToken()) {
-        this.token = other.token;
-      }
-    }
-
-    public getRolePermissions_args deepCopy() {
-      return new getRolePermissions_args(this);
-    }
-
-    @Override
-    public void clear() {
-      this.roleName = null;
-      this.token = null;
-    }
-
-    public String getRoleName() {
-      return this.roleName;
-    }
-
-    public getRolePermissions_args setRoleName(String roleName) {
-      this.roleName = roleName;
-      return this;
-    }
-
-    public void unsetRoleName() {
-      this.roleName = null;
-    }
-
-    /** Returns true if field roleName is set (has been assigned a value) and false otherwise */
-    public boolean isSetRoleName() {
-      return this.roleName != null;
-    }
-
-    public void setRoleNameIsSet(boolean value) {
-      if (!value) {
-        this.roleName = null;
-      }
-    }
-
-    public String getToken() {
-      return this.token;
-    }
-
-    public getRolePermissions_args setToken(String token) {
-      this.token = token;
-      return this;
-    }
-
-    public void unsetToken() {
-      this.token = null;
-    }
-
-    /** Returns true if field token is set (has been assigned a value) and false otherwise */
-    public boolean isSetToken() {
-      return this.token != null;
-    }
-
-    public void setTokenIsSet(boolean value) {
-      if (!value) {
-        this.token = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      case ROLE_NAME:
-        if (value == null) {
-          unsetRoleName();
-        } else {
-          setRoleName((String)value);
-        }
-        break;
-
-      case TOKEN:
-        if (value == null) {
-          unsetToken();
-        } else {
-          setToken((String)value);
-        }
-        break;
-
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      case ROLE_NAME:
-        return getRoleName();
-
-      case TOKEN:
-        return getToken();
-
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      case ROLE_NAME:
-        return isSetRoleName();
-      case TOKEN:
-        return isSetToken();
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof getRolePermissions_args)
-        return this.equals((getRolePermissions_args)that);
-      return false;
-    }
-
-    public boolean equals(getRolePermissions_args that) {
-      if (that == null)
-        return false;
-
-      boolean this_present_roleName = true && this.isSetRoleName();
-      boolean that_present_roleName = true && that.isSetRoleName();
-      if (this_present_roleName || that_present_roleName) {
-        if (!(this_present_roleName && that_present_roleName))
-          return false;
-        if (!this.roleName.equals(that.roleName))
-          return false;
-      }
-
-      boolean this_present_token = true && this.isSetToken();
-      boolean that_present_token = true && that.isSetToken();
-      if (this_present_token || that_present_token) {
-        if (!(this_present_token && that_present_token))
-          return false;
-        if (!this.token.equals(that.token))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      List<Object> list = new ArrayList<Object>();
-
-      boolean present_roleName = true && (isSetRoleName());
-      list.add(present_roleName);
-      if (present_roleName)
-        list.add(roleName);
-
-      boolean present_token = true && (isSetToken());
-      list.add(present_token);
-      if (present_token)
-        list.add(token);
-
-      return list.hashCode();
-    }
-
-    @Override
-    public int compareTo(getRolePermissions_args other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = Boolean.valueOf(isSetRoleName()).compareTo(other.isSetRoleName());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetRoleName()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.roleName, other.roleName);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetToken()).compareTo(other.isSetToken());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetToken()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.token, other.token);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
-    }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getRolePermissions_args(");
-      boolean first = true;
-
-      sb.append("roleName:");
-      if (this.roleName == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.roleName);
-      }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("token:");
-      if (this.token == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.token);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      if (roleName == null) {
-        throw new org.apache.thrift.protocol.TProtocolException("Required field 'roleName' was not present! Struct: " + toString());
-      }
-      if (token == null) {
-        throw new org.apache.thrift.protocol.TProtocolException("Required field 'token' was not present! Struct: " + toString());
-      }
-      // check for sub-struct validity
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class getRolePermissions_argsStandardSchemeFactory implements SchemeFactory {
-      public getRolePermissions_argsStandardScheme getScheme() {
-        return new getRolePermissions_argsStandardScheme();
-      }
-    }
-
-    private static class getRolePermissions_argsStandardScheme extends StandardScheme<getRolePermissions_args> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getRolePermissions_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 1: // ROLE_NAME
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.roleName = iprot.readString();
-                struct.setRoleNameIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 2: // TOKEN
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.token = iprot.readString();
-                struct.setTokenIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getRolePermissions_args struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.roleName != null) {
-          oprot.writeFieldBegin(ROLE_NAME_FIELD_DESC);
-          oprot.writeString(struct.roleName);
-          oprot.writeFieldEnd();
-        }
-        if (struct.token != null) {
-          oprot.writeFieldBegin(TOKEN_FIELD_DESC);
-          oprot.writeString(struct.token);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class getRolePermissions_argsTupleSchemeFactory implements SchemeFactory {
-      public getRolePermissions_argsTupleScheme getScheme() {
-        return new getRolePermissions_argsTupleScheme();
-      }
-    }
-
-    private static class getRolePermissions_argsTupleScheme extends TupleScheme<getRolePermissions_args> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getRolePermissions_args struct) throws org.apache.thrift.TException {
-        TTupleProtocol oprot = (TTupleProtocol) prot;
-        oprot.writeString(struct.roleName);
-        oprot.writeString(struct.token);
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getRolePermissions_args struct) throws org.apache.thrift.TException {
-        TTupleProtocol iprot = (TTupleProtocol) prot;
-        struct.roleName = iprot.readString();
-        struct.setRoleNameIsSet(true);
-        struct.token = iprot.readString();
-        struct.setTokenIsSet(true);
-      }
-    }
-
-  }
-
-  public static class getRolePermissions_result implements org.apache.thrift.TBase<getRolePermissions_result, getRolePermissions_result._Fields>, java.io.Serializable, Cloneable, Comparable<getRolePermissions_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getRolePermissions_result");
-
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
-    private static final org.apache.thrift.protocol.TField IRE_FIELD_DESC = new org.apache.thrift.protocol.TField("ire", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-    private static final org.apache.thrift.protocol.TField ARE_FIELD_DESC = new org.apache.thrift.protocol.TField("are", org.apache.thrift.protocol.TType.STRUCT, (short)2);
-    private static final org.apache.thrift.protocol.TField ASE_FIELD_DESC = new org.apache.thrift.protocol.TField("ase", org.apache.thrift.protocol.TType.STRUCT, (short)3);
-
-    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
-    static {
-      schemes.put(StandardScheme.class, new getRolePermissions_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getRolePermissions_resultTupleSchemeFactory());
-    }
-
-    public org.apache.airavata.userapi.models.APIPermissions success; // required
-    public org.apache.airavata.userapi.error.InvalidRequestException ire; // required
-    public org.apache.airavata.userapi.error.AuthorizationException are; // required
-    public org.apache.airavata.userapi.error.UserAPISystemException ase; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success"),
-      IRE((short)1, "ire"),
-      ARE((short)2, "are"),
-      ASE((short)3, "ase");
-
-      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 0: // SUCCESS
-            return SUCCESS;
-          case 1: // IRE
-            return IRE;
-          case 2: // ARE
-            return ARE;
-          case 3: // ASE
-            return ASE;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, org.apache.airavata.userapi.models.APIPermissions.class)));
-      tmpMap.put(_Fields.IRE, new org.apache.thrift.meta_data.FieldMetaData("ire", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
-      tmpMap.put(_Fields.ARE, new org.apache.thrift.meta_data.FieldMetaData("are", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
-      tmpMap.put(_Fields.ASE, new org.apache.thrift.meta_data.FieldMetaData("ase", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
-      metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getRolePermissions_result.class, metaDataMap);
-    }
-
-    public getRolePermissions_result() {
-    }
-
-    public getRolePermissions_result(
-      org.apache.airavata.userapi.models.APIPermissions success,
-      org.apache.airavata.userapi.error.InvalidRequestException ire,
-      org.apache.airavata.userapi.error.AuthorizationException are,
-      org.apache.airavata.userapi.error.UserAPISystemException ase)
-    {
-      this();
-      this.success = success;
-      this.ire = ire;
-      this.are = are;
-      this.ase = ase;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public getRolePermissions_result(getRolePermissions_result other) {
-      if (other.isSetSuccess()) {
-        this.success = new org.apache.airavata.userapi.models.APIPermissions(other.success);
-      }
-      if (other.isSetIre()) {
-        this.ire = new org.apache.airavata.userapi.error.InvalidRequestException(other.ire);
-      }
-      if (other.isSetAre()) {
-        this.are = new org.apache.airavata.userapi.error.AuthorizationException(other.are);
-      }
-      if (other.isSetAse()) {
-        this.ase = new org.apache.airavata.userapi.error.UserAPISystemException(other.ase);
-      }
-    }
-
-    public getRolePermissions_result deepCopy() {
-      return new getRolePermissions_result(this);
-    }
-
-    @Override
-    public void clear() {
-      this.success = null;
-      this.ire = null;
-      this.are = null;
-      this.ase = null;
-    }
-
-    public org.apache.airavata.userapi.models.APIPermissions getSuccess() {
-      return this.success;
-    }
-
-    public getRolePermissions_result setSuccess(org.apache.airavata.userapi.models.APIPermissions success) {
-      this.success = success;
-      return this;
-    }
-
-    public void unsetSuccess() {
-      this.success = null;
-    }
-
-    /** Returns true if field success is set (has been assigned a value) and false otherwise */
-    public boolean isSetSuccess() {
-      return this.success != null;
-    }
-
-    public void setSuccessIsSet(boolean value) {
-      if (!value) {
-        this.success = null;
-      }
-    }
-
-    public org.apache.airavata.userapi.error.InvalidRequestException getIre() {
-      return this.ire;
-    }
-
-    public getRolePermissions_result setIre(org.apache.airavata.userapi.error.InvalidRequestException ire) {
-      this.ire = ire;
-      return this;
-    }
-
-    public void unsetIre() {
-      this.ire = null;
-    }
-
-    /** Returns true if field ire is set (has been assigned a value) and false otherwise */
-    public boolean isSetIre() {
-      return this.ire != null;
-    }
-
-    public void setIreIsSet(boolean value) {
-      if (!value) {
-        this.ire = null;
-      }
-    }
-
-    public org.apache.airavata.userapi.error.AuthorizationException getAre() {
-      return this.are;
-    }
-
-    public getRolePermissions_result setAre(org.apache.airavata.userapi.error.AuthorizationException are) {
-      this.are = are;
-      return this;
-    }
-
-    public void unsetAre() {
-      this.are = null;
-    }
-
-    /** Returns true if field are is set (has been assigned a value) and false otherwise */
-    public boolean isSetAre() {
-      return this.are != null;
-    }
-
-    public void setAreIsSet(boolean value) {
-      if (!value) {
-        this.are = null;
-      }
-    }
-
-    public org.apache.airavata.userapi.error.UserAPISystemException getAse() {
-      return this.ase;
-    }
-
-    public getRolePermissions_result setAse(org.apache.airavata.userapi.error.UserAPISystemException ase) {
-      this.ase = ase;
-      return this;
-    }
-
-    public void unsetAse() {
-      this.ase = null;
-    }
-
-    /** Returns true if field ase is set (has been assigned a value) and false otherwise */
-    public boolean isSetAse() {
-      return this.ase != null;
-    }
-
-    public void setAseIsSet(boolean value) {
-      if (!value) {
-        this.ase = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((org.apache.airavata.userapi.models.APIPermissions)value);
-        }
-        break;
-
-      case IRE:
-        if (value == null) {
-          unsetIre();
-        } else {
-          setIre((org.apache.airavata.userapi.error.InvalidRequestException)value);
-        }
-        break;
-
-      case ARE:
-        if (value == null) {
-          unsetAre();
-        } else {
-          setAre((org.apache.airavata.userapi.error.AuthorizationException)value);
-        }
-        break;
-
-      case ASE:
-        if (value == null) {
-          unsetAse();
-        } else {
-          setAse((org.apache.airavata.userapi.error.UserAPISystemException)value);
-        }
-        break;
-
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      case SUCCESS:
-        return getSuccess();
-
-      case IRE:
-        return getIre();
-
-      case ARE:
-        return getAre();
-
-      case ASE:
-        return getAse();
-
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
-      case IRE:
-        return isSetIre();
-      case ARE:
-        return isSetAre();
-      case ASE:
-        return isSetAse();
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof getRolePermissions_result)
-        return this.equals((getRolePermissions_result)that);
-      return false;
-    }
-
-    public boolean equals(getRolePermissions_result that) {
-      if (that == null)
-        return false;
-
-      boolean this_present_success = true && this.isSetSuccess();
-      boolean that_present_success = true && that.isSetSuccess();
-      if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
-      }
-
-      boolean this_present_ire = true && this.isSetIre();
-      boolean that_present_ire = true && that.isSetIre();
-      if (this_present_ire || that_present_ire) {
-        if (!(this_present_ire && that_present_ire))
-          return false;
-        if (!this.ire.equals(that.ire))
-          return false;
-      }
-
-      boolean this_present_are = true && this.isSetAre();
-      boolean that_present_are = true && that.isSetAre();
-      if (this_present_are || that_present_are) {
-        if (!(this_present_are && that_present_are))
-          return false;
-        if (!this.are.equals(that.are))
-          return false;
-      }
-
-      boolean this_present_ase = true && this.isSetAse();
-      boolean that_present_ase = true && that.isSetAse();
-      if (this_present_ase || that_present_ase) {
-        if (!(this_present_ase && that_present_ase))
-          return false;
-        if (!this.ase.equals(that.ase))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      List<Object> list = new ArrayList<Object>();
-
-      boolean present_success = true && (isSetSuccess());
-      list.add(present_success);
-      if (present_success)
-        list.add(success);
-
-      boolean present_ire = true && (isSetIre());
-      list.add(present_ire);
-      if (present_ire)
-        list.add(ire);
-
-      boolean present_are = true && (isSetAre());
-      list.add(present_are);
-      if (present_are)
-        list.add(are);
-
-      boolean present_ase = true && (isSetAse());
-      list.add(present_ase);
-      if (present_ase)
-        list.add(ase);
-
-      return list.hashCode();
-    }
-
-    @Override
-    public int compareTo(getRolePermissions_result other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetSuccess()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetIre()).compareTo(other.isSetIre());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetIre()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ire, other.ire);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetAre()).compareTo(other.isSetAre());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetAre()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.are, other.are);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetAse()).compareTo(other.isSetAse());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetAse()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ase, other.ase);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
-      }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getRolePermissions_result(");
-      boolean first = true;
-
-      sb.append("success:");
-      if (this.success == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.success);
-      }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("ire:");
-      if (this.ire == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.ire);
-      }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("are:");
-      if (this.are == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.are);
-      }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("ase:");
-      if (this.ase == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.ase);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-      if (success != null) {
-        success.validate();
-      }
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class getRolePermissions_resultStandardSchemeFactory implements SchemeFactory {
-      public getRolePermissions_resultStandardScheme getScheme() {
-        return new getRolePermissions_resultStandardScheme();
-      }
-    }
-
-    private static class getRolePermissions_resultStandardScheme extends StandardScheme<getRolePermissions_result> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getRolePermissions_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.success = new org.apache.airavata.userapi.models.APIPermissions();
-                struct.success.read(iprot);
-                struct.setSuccessIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 1: // IRE
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.ire = new org.apache.airavata.userapi.error.InvalidRequestException();
-                struct.ire.read(iprot);
-                struct.setIreIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 2: // ARE
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.are = new org.apache.airavata.userapi.error.AuthorizationException();
-                struct.are.read(iprot);
-                struct.setAreIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 3: // ASE
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.ase = new org.apache.airavata.userapi.error.UserAPISystemException();
-                struct.ase.read(iprot);
-                struct.setAseIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getRolePermissions_result struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.success != null) {
-          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          struct.success.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        if (struct.ire != null) {
-          oprot.writeFieldBegin(IRE_FIELD_DESC);
-          struct.ire.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        if (struct.are != null) {
-          oprot.writeFieldBegin(ARE_FIELD_DESC);
-          struct.are.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        if (struct.ase != null) {
-          oprot.writeFieldBegin(ASE_FIELD_DESC);
-          struct.ase.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class getRolePermissions_resultTupleSchemeFactory implements SchemeFactory {
-      public getRolePermissions_resultTupleScheme getScheme() {
-        return new getRolePermissions_resultTupleScheme();
-      }
-    }
-
-    private static class getRolePermissions_resultTupleScheme extends TupleScheme<getRolePermissions_result> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getRolePermissions_result struct) throws org.apache.thrift.TException {
-        TTupleProtocol oprot = (TTupleProtocol) prot;
-        BitSet optionals = new BitSet();
-        if (struct.isSetSuccess()) {
-          optionals.set(0);
-        }
-        if (struct.isSetIre()) {
-          optionals.set(1);
-        }
-        if (struct.isSetAre()) {
-          optionals.set(2);
-        }
-        if (struct.isSetAse()) {
-          optionals.set(3);
-        }
-        oprot.writeBitSet(optionals, 4);
-        if (struct.isSetSuccess()) {
-          struct.success.write(oprot);
-        }
-        if (struct.isSetIre()) {
-          struct.ire.write(oprot);
-        }
-        if (struct.isSetAre()) {
-          struct.are.write(oprot);
-        }
-        if (struct.isSetAse()) {
-          struct.ase.write(oprot);
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getRolePermissions_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {

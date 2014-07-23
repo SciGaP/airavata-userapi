@@ -35,6 +35,9 @@ import java.util.List;
 
 public class UserStoreManagerServiceClient extends BaseServiceClient {
 
+    private static final String ADMIN_ROLE = "admin";
+    private static final String INTERNAL_ROLE_PREFIX = "Internal";
+
     public UserStoreManagerServiceClient(String backEndUrl) throws RemoteException, UserStoreExceptionException {
         String serviceName = "RemoteUserStoreManagerService";
         this.endPoint = backEndUrl + "/services/" + serviceName;
@@ -317,6 +320,15 @@ public class UserStoreManagerServiceClient extends BaseServiceClient {
 
     public List<String> getRoleNames(String token) throws AuthorizationException, RemoteException, UserStoreExceptionException {
         authenticateStubFromToken(token);
-        return Arrays.asList(((RemoteUserStoreManagerServiceStub) serviceStub).getRoleNames());
+        List<String> temp = Arrays.asList(((RemoteUserStoreManagerServiceStub) serviceStub).getRoleNames());
+        List<String> result = new ArrayList<String>();
+        for(int i=0;i<temp.size();i++){
+            if(temp.get(i).equals(ADMIN_ROLE) || temp.get(i).startsWith(INTERNAL_ROLE_PREFIX)){
+                continue;
+            }
+            result.add(temp.get(i));
+        }
+
+        return result;
     }
 }

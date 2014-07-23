@@ -137,13 +137,25 @@ public class UserAPIServerHandlerTest extends TestCase {
 
     public void testAuthenticateUser() throws Exception {
         testAdminLogin();
-        APIPermissions apiPermissions = userAPIServerHandler.authenticateUser("admin","phprg9067@min",token);
+        APIPermissions apiPermissions = userAPIServerHandler.authenticateUser("scnakandala","nimbus2000",token);
         Assert.assertNotNull(apiPermissions);
     }
 
     public void testGetRoleNames() throws Exception{
         testAdminLogin();
-        List<String> result = userAPIServerHandler.getRoleNames(token);
+        List<String> result = userAPIServerHandler.getAllRoleNames(token);
         Assert.assertNotNull(result);
+    }
+
+    public void testCheckPermissionString() throws Exception{
+        testAdminLogin();
+        boolean temp = userAPIServerHandler.checkPermission("scnakandala","airavata-api/get_api_version", token);
+        Assert.assertTrue(temp);
+    }
+
+    public void testGetUserPermissions() throws  Exception{
+        testAdminLogin();
+        APIPermissions apiPermissions = userAPIServerHandler.getUserPermissions("scnakandala", token);
+        Assert.assertNotNull(apiPermissions);
     }
 }
