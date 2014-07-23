@@ -11,6 +11,14 @@
         <module>server</module>
         <module>distribution</module>
     </modules>
+    <dependencies>
+        <dependency>
+            <groupId>airavata-userapi</groupId>
+            <artifactId>airavata-userapi</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     <modelVersion>4.0.0</modelVersion>
     <name>Airavata User API</name>
     <url>http://airavata.apache.org/</url>

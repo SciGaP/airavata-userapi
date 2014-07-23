@@ -22,7 +22,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="airavata-userapi" />
+        <module name="distribution" />
+        <module name="server" />
       </profile>
     </annotationProcessing>
   </component>
