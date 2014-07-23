@@ -41,3 +41,14 @@ struct UserProfile {
     9: optional string im,
     10: optional string url
 }
+
+struct AuthenticationResponse{
+    1: required i32 expiresIn,
+    2: required string accessToken
+}
+
+struct APIPermissions {
+    1: required map<string, bool> airavataAPIPermissions,
+    2: required map<string, bool> airavataAppCatalogPermissions,
+    3: required string signature
+}

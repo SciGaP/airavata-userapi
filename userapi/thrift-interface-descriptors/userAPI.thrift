@@ -59,22 +59,14 @@ service UserAPI {
                 2: userAPIErrors.UserAPISystemException ase)
 
   /**
-   * Login Admin
+   * Authenticate Gateway
    *
   */
-  string adminLogin (1: required string username,
+  userAPIModels.AuthenticationResponse authenticateGateway (1: required string username,
                      2: required string password)
       throws (1: userAPIErrors.InvalidRequestException ire,
               2: userAPIErrors.UserAPISystemException ase,
               3: userAPIErrors.AuthenticationException are)
-
-/**
-   * Logout Admin
-   *
-  */
-  void adminLogout (1: required string token)
-      throws  (1: userAPIErrors.InvalidRequestException ire,
-               2: userAPIErrors.UserAPISystemException ase)
 
 /**
    * Check username exists
@@ -146,7 +138,7 @@ service UserAPI {
     * Authenticate user
     *
   */
-  bool authenticateUser (1: required string userName,
+  userAPIModels.APIPermissions authenticateUser (1: required string userName,
                          2: required string password,
                          3: required string token)
             throws (1: userAPIErrors.InvalidRequestException ire,
@@ -195,31 +187,38 @@ service UserAPI {
                     3: userAPIErrors.UserAPISystemException ase)
 
   /**
-    * Get user list of a particular role
-    *
-  */
-  void addRole (1: required string roleName,
-                2: required string token)
-            throws (1: userAPIErrors.InvalidRequestException ire,
-                    2: userAPIErrors.AuthorizationException are,
-                    3: userAPIErrors.UserAPISystemException ase)
-
-  /**
-    * Get user list of a particular role
-    *
-  */
-  void removeRole (1: required string roleName,
-                   2: required string token)
-            throws (1: userAPIErrors.InvalidRequestException ire,
-                    2: userAPIErrors.AuthorizationException are,
-                    3: userAPIErrors.UserAPISystemException ase)
-
-  /**
-    * Get user list of a particular role
+    * Get list of all roles
     *
   */
   list<string> getRoleNames (1: required string token)
             throws (1: userAPIErrors.InvalidRequestException ire,
                     2: userAPIErrors.AuthorizationException are,
                     3: userAPIErrors.UserAPISystemException ase)
+
+  /**
+      * Get permission for user
+      *
+    */
+    userAPIModels.APIPermissions getUserPermissions (1: required string username, 2: required string token)
+              throws (1: userAPIErrors.InvalidRequestException ire,
+                      2: userAPIErrors.AuthorizationException are,
+                      3: userAPIErrors.UserAPISystemException ase)
+
+  /**
+        * Get permission for role
+        *
+      */
+      userAPIModels.APIPermissions getRolePermissions (1: required string roleName, 2: required string token)
+                throws (1: userAPIErrors.InvalidRequestException ire,
+                        2: userAPIErrors.AuthorizationException are,
+                        3: userAPIErrors.UserAPISystemException ase)
+
+  /**
+        * Check permission for permission string
+        *
+      */
+      bool checkPermission (1: required string username, 2: required string permissionString, 3: required string token)
+                throws (1: userAPIErrors.InvalidRequestException ire,
+                        2: userAPIErrors.AuthorizationException are,
+                        3: userAPIErrors.UserAPISystemException ase)
 }
