@@ -143,7 +143,8 @@ service UserAPI {
                          3: required string token)
             throws (1: userAPIErrors.InvalidRequestException ire,
                     2: userAPIErrors.AuthorizationException are,
-                    3: userAPIErrors.UserAPISystemException ase)
+                    3: userAPIErrors.UserAPISystemException ase,
+                    4: userAPIErrors.AuthenticationException ate)
 
   /**
     * Add user to a role
