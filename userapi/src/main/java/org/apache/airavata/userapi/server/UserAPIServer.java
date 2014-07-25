@@ -28,19 +28,21 @@ import org.apache.airavata.userapi.common.utils.ServerProperties;
 import org.apache.airavata.userapi.error.UserAPIErrorType;
 import org.apache.airavata.userapi.error.UserAPISystemException;
 import org.apache.airavata.userapi.server.handler.UserAPIServerHandler;
+import org.apache.log4j.PropertyConfigurator;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadPoolServer;
 import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TServerTransport;
 import org.apache.thrift.transport.TTransportException;
+
+import java.io.File;
+import java.net.InetSocketAddress;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetSocketAddress;
-
 
 public class UserAPIServer implements IServer{
-
     private final static Logger logger = LoggerFactory.getLogger(UserAPIServer.class);
     private static final String SERVER_NAME = "Airavata UserAPI Server";
     private static final String SERVER_VERSION = "1.0";
@@ -113,6 +115,12 @@ public class UserAPIServer implements IServer{
     }
 
     public static void main(String[] args) {
+        if (new File("./conf/log4j.properties").exists()) {
+            PropertyConfigurator.configure("./conf/log4j.properties");
+        } else {
+            PropertyConfigurator.configure(
+                    ClassLoader.getSystemResource("conf/log4j.properties").getPath());
+        }
         try {
             UserAPIServer server = new UserAPIServer();
             server.start();

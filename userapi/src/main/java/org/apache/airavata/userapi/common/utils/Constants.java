@@ -31,6 +31,9 @@ public class Constants {
     public static final String KEY_STORE_PWD = "KEY_STORE_PWD";
     public static final String KEY_STORE_TYPE = "KEY_STORE_TYPE";
 
+    public static final String AIRAVATA_API_PERMISSIONS = "AIRAVATA_API_PERMISSIONS";
+    public static final String APP_CATALOG_PERMISSIONS = "APP_CATALOG_PERMISSIONS";
+
     public static final String AES_KEY = "AES_KEY";
 
     public static final String WSO2_IS_URL = "WSO2_IS_URL";

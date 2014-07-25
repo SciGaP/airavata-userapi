@@ -59,7 +59,7 @@ public class TokenEncryptionUtil
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             final SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            final String encryptedString = Base64.encodeBase64String(cipher.doFinal(strToEncrypt.getBytes()));
+            final String encryptedString = new String(Base64.encodeBase64(cipher.doFinal(strToEncrypt.getBytes())));
             return encryptedString;
     }
 
@@ -68,7 +68,7 @@ public class TokenEncryptionUtil
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
             final SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            final String decryptedString = new String(cipher.doFinal(Base64.decodeBase64(strToDecrypt)));
+            final String decryptedString = new String(cipher.doFinal(Base64.decodeBase64(strToDecrypt.getBytes())));
 
             HashMap<String,String> results = new HashMap<String, String>();
             results.put(USERNAME, decryptedString.split("\n")[0]);

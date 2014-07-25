@@ -21,10 +21,7 @@
 
 package org.apache.airavata.userapi.common.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -36,13 +33,18 @@ public class ServerProperties {
     private Properties properties = null;
     private static ServerProperties instance;
 
+    public static final String SERVER_PROPERTY_FILE = "./conf/server.properties";
+    public static final String DEFAULT_SERVER_PROPERTY_FILE = "conf/server.properties";
+
     private ServerProperties(){
         try {
-            URL resourceUrl = getClass().
-                    getResource("/server.properties");
-            Path resourcePath = Paths.get(resourceUrl.toURI());
-            File file = new File(resourcePath.toString());
-            FileInputStream fileInput = new FileInputStream(file);
+            InputStream fileInput;
+            if (new File(SERVER_PROPERTY_FILE).exists()) {
+                fileInput = new FileInputStream(SERVER_PROPERTY_FILE);
+            } else {
+                // try to load default parser.properties from class loader.
+                fileInput = ClassLoader.getSystemResource(DEFAULT_SERVER_PROPERTY_FILE).openStream();
+            }
             Properties properties = new Properties();
             properties.load(fileInput);
             fileInput.close();
@@ -50,8 +52,6 @@ public class ServerProperties {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
     }
@@ -69,13 +69,10 @@ public class ServerProperties {
 
         if(key.equals(Constants.KEY_STORE_NAME)){
             if(val.isEmpty()){val = defaultVal;}
-            URL resourceUrl = getClass().
-                    getResource("/security/" + val);
-            try {
-                Path resourcePath = Paths.get(resourceUrl.toURI());
-                return resourcePath.toString();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
+            if (new File("./security/"+val).exists()) {
+                return "./security/"+val;
+            } else {
+                return ClassLoader.getSystemResource("security/"+val).getPath();
             }
 
         }

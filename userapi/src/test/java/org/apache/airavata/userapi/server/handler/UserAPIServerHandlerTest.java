@@ -23,6 +23,8 @@ package org.apache.airavata.userapi.server.handler;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import org.apache.airavata.userapi.models.APIPermissions;
+import org.apache.airavata.userapi.models.AuthenticationResponse;
 import org.apache.airavata.userapi.models.UserProfile;
 
 import java.util.List;
@@ -45,22 +47,9 @@ public class UserAPIServerHandlerTest extends TestCase {
     }
 
     public void testAdminLogin() throws Exception {
-        String temp = userAPIServerHandler.adminLogin("admin@phprg.scigap.org","phprg9067@min");
-        Assert.assertNotNull(temp);
-        this.token = temp;
-    }
-
-
-    public void testAdminLogout() throws Exception {
-        testAdminLogin();
-        boolean exceptionThrown = false;
-        try{
-            userAPIServerHandler.adminLogout(token);
-        }catch (Exception ex){
-            exceptionThrown = true;
-        }
-
-        Assert.assertFalse(exceptionThrown);
+        AuthenticationResponse authenticationResponse = userAPIServerHandler.authenticateGateway("admin@phprg.scigap.org","phprg9067@min");
+        Assert.assertNotNull(authenticationResponse);
+        this.token = authenticationResponse.accessToken;
     }
 
     public void testCheckUsernameExists() throws Exception {
@@ -81,13 +70,13 @@ public class UserAPIServerHandlerTest extends TestCase {
         userProfile.firstName = "testuser";
         userProfile.lastName = "testuser";
         userProfile.emailAddress = "test_user@scigap.org";
-        /*userProfile.organization = "scigap";
+        userProfile.organization = "scigap";
         userProfile.address = "address";
         userProfile.country = "dfadf";
         userProfile.telephone = "232323";
         userProfile.mobile = "23232342";
         userProfile.im = "ssdASsSD";
-        userProfile.url = "eefer.com";*/
+        userProfile.url = "eefer.com";
 
         try{
             userAPIServerHandler.createNewUser("testUser","abc123", userProfile, token);
@@ -125,7 +114,7 @@ public class UserAPIServerHandlerTest extends TestCase {
         testAdminLogin();
         boolean exceptionThrown = false;
         try{
-            userAPIServerHandler.removeUser("test_user", token);
+            userAPIServerHandler.removeUser("testuser", token);
         }catch (Exception ex){
             exceptionThrown = true;
         }
@@ -138,7 +127,7 @@ public class UserAPIServerHandlerTest extends TestCase {
         testCreateNewUser();
         boolean exceptionThrown = false;
         try{
-            userAPIServerHandler.updateUserPassword("test_user", "abc456", "abc123", token);
+            userAPIServerHandler.updateUserPassword("testuser", "abc456", "abc123", token);
             testRemoveUser();
         }catch (Exception ex){
             exceptionThrown = true;
@@ -148,62 +137,25 @@ public class UserAPIServerHandlerTest extends TestCase {
 
     public void testAuthenticateUser() throws Exception {
         testAdminLogin();
-        boolean isAuthentic = userAPIServerHandler.authenticateUser("admin","phprg9067@min",token);
-        Assert.assertTrue(isAuthentic);
+        APIPermissions apiPermissions = userAPIServerHandler.authenticateUser("scnakandala","nimbus2000",token);
+        Assert.assertNotNull(apiPermissions);
     }
 
     public void testGetRoleNames() throws Exception{
         testAdminLogin();
-        List<String> result = userAPIServerHandler.getRoleNames(token);
+        List<String> result = userAPIServerHandler.getAllRoleNames(token);
         Assert.assertNotNull(result);
     }
 
-    public void testRoles() throws Exception{
+    public void testCheckPermissionString() throws Exception{
         testAdminLogin();
-        userAPIServerHandler.addRole("New_Role", token);
-        List<String> result = userAPIServerHandler.getRoleNames(token);
-        boolean contains = false;
-        for(int i=0;i<result.size();i++){
-            if(result.get(i).equals("New_Role")){
-                contains = true;
-                break;
-            }
-        }
-        Assert.assertTrue(contains);
+        boolean temp = userAPIServerHandler.checkPermission("scnakandala","airavata-api/get_api_version", token);
+        Assert.assertTrue(temp);
+    }
 
-        userAPIServerHandler.addUserToRole("admin","New_Role", token);
-        result = userAPIServerHandler.getRoleListOfUser("admin", token);
-        contains = false;
-        for(int i=0;i<result.size();i++){
-            if(result.get(i).equals("New_Role")){
-                contains = true;
-                break;
-            }
-        }
-        Assert.assertTrue(contains);
-
-        userAPIServerHandler.removeUserFromRole("admin", "New_Role", token);
-        result = userAPIServerHandler.getRoleListOfUser("admin", token);
-        contains = false;
-        for(int i=0;i<result.size();i++){
-            if(result.get(i).equals("New_Role")){
-                contains = true;
-                break;
-            }
-        }
-        Assert.assertTrue(!contains);
-
-
-        userAPIServerHandler.removeRole("New_Role", token);
-        result = userAPIServerHandler.getRoleNames(token);
-        contains = false;
-        for(int i=0;i<result.size();i++){
-            if(result.get(i).equals("New_Role")){
-                contains = true;
-                break;
-            }
-        }
-
-        Assert.assertTrue(!contains);
+    public void testGetUserPermissions() throws  Exception{
+        testAdminLogin();
+        APIPermissions apiPermissions = userAPIServerHandler.getUserPermissions("scnakandala", token);
+        Assert.assertNotNull(apiPermissions);
     }
 }

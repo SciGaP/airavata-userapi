@@ -50,7 +50,7 @@ public class UserAPISystemException extends TException implements org.apache.thr
 
   /**
    * 
-   * @see UserAPIErrorType
+   * @see org.apache.airavata.userapi.error.UserAPIErrorType
    */
   public UserAPIErrorType userAPIErrorType; // required
   public String message; // optional
@@ -59,7 +59,7 @@ public class UserAPISystemException extends TException implements org.apache.thr
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     /**
      * 
-     * @see UserAPIErrorType
+     * @see org.apache.airavata.userapi.error.UserAPIErrorType
      */
     USER_APIERROR_TYPE((short)1, "userAPIErrorType"),
     MESSAGE((short)2, "message");
@@ -167,7 +167,7 @@ public class UserAPISystemException extends TException implements org.apache.thr
 
   /**
    * 
-   * @see UserAPIErrorType
+   * @see org.apache.airavata.userapi.error.UserAPIErrorType
    */
   public UserAPIErrorType getUserAPIErrorType() {
     return this.userAPIErrorType;
@@ -175,7 +175,7 @@ public class UserAPISystemException extends TException implements org.apache.thr
 
   /**
    * 
-   * @see UserAPIErrorType
+   * @see org.apache.airavata.userapi.error.UserAPIErrorType
    */
   public UserAPISystemException setUserAPIErrorType(UserAPIErrorType userAPIErrorType) {
     this.userAPIErrorType = userAPIErrorType;
@@ -355,11 +355,11 @@ public class UserAPISystemException extends TException implements org.apache.thr
     return _Fields.findByThriftId(fieldId);
   }
 
-  public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+  public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
     schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
   }
 
-  public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+  public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
     schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
   }
 
@@ -389,7 +389,7 @@ public class UserAPISystemException extends TException implements org.apache.thr
     return sb.toString();
   }
 
-  public void validate() throws org.apache.thrift.TException {
+  public void validate() throws TException {
     // check for required fields
     if (userAPIErrorType == null) {
       throw new org.apache.thrift.protocol.TProtocolException("Required field 'userAPIErrorType' was not present! Struct: " + toString());
@@ -400,7 +400,7 @@ public class UserAPISystemException extends TException implements org.apache.thr
   private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
     try {
       write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-    } catch (org.apache.thrift.TException te) {
+    } catch (TException te) {
       throw new java.io.IOException(te);
     }
   }
@@ -408,7 +408,7 @@ public class UserAPISystemException extends TException implements org.apache.thr
   private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
     try {
       read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-    } catch (org.apache.thrift.TException te) {
+    } catch (TException te) {
       throw new java.io.IOException(te);
     }
   }
@@ -421,7 +421,7 @@ public class UserAPISystemException extends TException implements org.apache.thr
 
   private static class UserAPISystemExceptionStandardScheme extends StandardScheme<UserAPISystemException> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, UserAPISystemException struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, UserAPISystemException struct) throws TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -458,7 +458,7 @@ public class UserAPISystemException extends TException implements org.apache.thr
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, UserAPISystemException struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, UserAPISystemException struct) throws TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -489,7 +489,7 @@ public class UserAPISystemException extends TException implements org.apache.thr
   private static class UserAPISystemExceptionTupleScheme extends TupleScheme<UserAPISystemException> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, UserAPISystemException struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, UserAPISystemException struct) throws TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       oprot.writeI32(struct.userAPIErrorType.getValue());
       BitSet optionals = new BitSet();
@@ -503,7 +503,7 @@ public class UserAPISystemException extends TException implements org.apache.thr
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, UserAPISystemException struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, UserAPISystemException struct) throws TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       struct.userAPIErrorType = UserAPIErrorType.findByValue(iprot.readI32());
       struct.setUserAPIErrorTypeIsSet(true);
