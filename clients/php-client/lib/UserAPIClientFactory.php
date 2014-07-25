@@ -16,11 +16,16 @@ require_once $GLOBALS['THRIFT_ROOT'] . 'StringFunc/TStringFunc.php';
 require_once $GLOBALS['THRIFT_ROOT'] . 'StringFunc/Core.php';
 
 $GLOBALS['AIRAVATA_ROOT'] = 'Airavata/';
-require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/Airavata.php';
+require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/UserAPI.php';
+require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/Types.php';
+require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/Models/Types.php';
 
 use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Transport\TSocket;
 use Airavata\UserAPI\UserAPIClient;
+use Airavata\UserAPI\Models\AuthenticationResponse;
+use Airavata\UserAPI\Models\APIPermissions;
+use Airavata\UserAPI\Models\UserProfile;
 
 class UserAPIClientFactory
 {

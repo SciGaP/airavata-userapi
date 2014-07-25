@@ -20,7 +20,12 @@ require_once $GLOBALS['THRIFT_ROOT'] . 'StringFunc/Core.php';
 
 $GLOBALS['AIRAVATA_ROOT'] = '../lib/Airavata/';
 require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/UserAPI.php';
-require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/UserAPI.php';
+require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/Types.php';
+require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/Models/Types.php';
+
+use Airavata\UserAPI\Models\AuthenticationResponse;
+use Airavata\UserAPI\Models\APIPermissions;
+use Airavata\UserAPI\Models\UserProfile;
 
 use Airavata\UserAPI\Error\UserAPISystemException;
 use Airavata\UserAPI\Error\InvalidRequestException;
@@ -44,16 +49,15 @@ $client = new UserAPIClient($protocol);
 
 try
 {
-    $token = $client->adminLogin($userapiconfig['ADMIN_USERNAME'],$userapiconfig['ADMIN_PASSWORD']);
-    if($token !== null){
-        //User name must be a non null string with following format, [a-zA-Z0-9._-|//]
-        $client->createNewUser("phpTestUser","testUserPwd", $token);
-        if($client->authenticateUser("phpTestUser","testUserPwd", $token)){
-            print "Authenticated \"phpTestUser\" user successfully" . "\n";
-        }else{
-            print "Unable to authenticated \"phpTestUser\" user" . "\n";
-        }
-        $client->removeUser("phpTestUser", $token);
+    $authenticationResponse = $client->authenticateGateway($userapiconfig['ADMIN_USERNAME'],$userapiconfig['ADMIN_PASSWORD']);
+    if($authenticationResponse !== null){
+        $apiPermissions = $client->authenticateUser("test_user","test_user", $authenticationResponse->accessToken);
+        print "Authenticated \"phpTestUser\" user successfully" . "\n";
+        print "-------------------Airavata API permissions-------------------" . "\n";
+        print_r($apiPermissions->airavataAPIPermissions);
+        print "-------------------App Catalog permissions-------------------" . "\n";
+        print_r($apiPermissions->airavataAppCatalogPermissions);
+
     }else{
         print "Invalid credential for the Admin" . "\n";
     }

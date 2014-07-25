@@ -33,10 +33,10 @@ use Airavata\UserAPI\Client\AiravataClientFactory;
 use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Transport\TSocket;
 use Airavata\UserAPI\UserAPIClient;
-
 use Airavata\UserAPI\Models\AuthenticationResponse;
 use Airavata\UserAPI\Models\APIPermissions;
 use Airavata\UserAPI\Models\UserProfile;
+
 $userapiconfig = parse_ini_file("userapi-client-properties.ini");
 
 $transport = new TSocket($userapiconfig['USERAPI_SERVER'], $userapiconfig['USERAPI_PORT']);
@@ -48,16 +48,14 @@ $client = new UserAPIClient($protocol);
 
 try
 {
-    $version = $client->getAPIVersion();
+    $authenticationResponse = $client->authenticateGateway($userapiconfig['ADMIN_USERNAME'],$userapiconfig['ADMIN_PASSWORD']);
+    if($authenticationResponse !== null){
+        print "Admin logged in successfully" . "\n";
+    }else{
+        print "Invalid credential for the Admin" . "\n";
+    }
 }
 catch (TException $texp)
 {
     print "Exception: " . $texp->getMessage()."\n";
 }
-
-
-echo 'Airavata UserAPI server version is ' . $version . "\n";
-
-
-$transport->close();
-?>

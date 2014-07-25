@@ -36,6 +36,30 @@ class UserProfile {
    * @var string
    */
   public $organization = null;
+  /**
+   * @var string
+   */
+  public $address = null;
+  /**
+   * @var string
+   */
+  public $country = null;
+  /**
+   * @var string
+   */
+  public $telephone = null;
+  /**
+   * @var string
+   */
+  public $mobile = null;
+  /**
+   * @var string
+   */
+  public $im = null;
+  /**
+   * @var string
+   */
+  public $url = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -56,6 +80,30 @@ class UserProfile {
           'var' => 'organization',
           'type' => TType::STRING,
           ),
+        5 => array(
+          'var' => 'address',
+          'type' => TType::STRING,
+          ),
+        6 => array(
+          'var' => 'country',
+          'type' => TType::STRING,
+          ),
+        7 => array(
+          'var' => 'telephone',
+          'type' => TType::STRING,
+          ),
+        8 => array(
+          'var' => 'mobile',
+          'type' => TType::STRING,
+          ),
+        9 => array(
+          'var' => 'im',
+          'type' => TType::STRING,
+          ),
+        10 => array(
+          'var' => 'url',
+          'type' => TType::STRING,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -70,6 +118,24 @@ class UserProfile {
       }
       if (isset($vals['organization'])) {
         $this->organization = $vals['organization'];
+      }
+      if (isset($vals['address'])) {
+        $this->address = $vals['address'];
+      }
+      if (isset($vals['country'])) {
+        $this->country = $vals['country'];
+      }
+      if (isset($vals['telephone'])) {
+        $this->telephone = $vals['telephone'];
+      }
+      if (isset($vals['mobile'])) {
+        $this->mobile = $vals['mobile'];
+      }
+      if (isset($vals['im'])) {
+        $this->im = $vals['im'];
+      }
+      if (isset($vals['url'])) {
+        $this->url = $vals['url'];
       }
     }
   }
@@ -121,6 +187,48 @@ class UserProfile {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 5:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->address);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 6:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->country);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 7:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->telephone);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 8:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->mobile);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 9:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->im);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 10:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->url);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -152,6 +260,323 @@ class UserProfile {
     if ($this->organization !== null) {
       $xfer += $output->writeFieldBegin('organization', TType::STRING, 4);
       $xfer += $output->writeString($this->organization);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->address !== null) {
+      $xfer += $output->writeFieldBegin('address', TType::STRING, 5);
+      $xfer += $output->writeString($this->address);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->country !== null) {
+      $xfer += $output->writeFieldBegin('country', TType::STRING, 6);
+      $xfer += $output->writeString($this->country);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->telephone !== null) {
+      $xfer += $output->writeFieldBegin('telephone', TType::STRING, 7);
+      $xfer += $output->writeString($this->telephone);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->mobile !== null) {
+      $xfer += $output->writeFieldBegin('mobile', TType::STRING, 8);
+      $xfer += $output->writeString($this->mobile);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->im !== null) {
+      $xfer += $output->writeFieldBegin('im', TType::STRING, 9);
+      $xfer += $output->writeString($this->im);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->url !== null) {
+      $xfer += $output->writeFieldBegin('url', TType::STRING, 10);
+      $xfer += $output->writeString($this->url);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class AuthenticationResponse {
+  static $_TSPEC;
+
+  /**
+   * @var int
+   */
+  public $expiresIn = null;
+  /**
+   * @var string
+   */
+  public $accessToken = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'expiresIn',
+          'type' => TType::I32,
+          ),
+        2 => array(
+          'var' => 'accessToken',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['expiresIn'])) {
+        $this->expiresIn = $vals['expiresIn'];
+      }
+      if (isset($vals['accessToken'])) {
+        $this->accessToken = $vals['accessToken'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'AuthenticationResponse';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->expiresIn);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->accessToken);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('AuthenticationResponse');
+    if ($this->expiresIn !== null) {
+      $xfer += $output->writeFieldBegin('expiresIn', TType::I32, 1);
+      $xfer += $output->writeI32($this->expiresIn);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->accessToken !== null) {
+      $xfer += $output->writeFieldBegin('accessToken', TType::STRING, 2);
+      $xfer += $output->writeString($this->accessToken);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class APIPermissions {
+  static $_TSPEC;
+
+  /**
+   * @var array
+   */
+  public $airavataAPIPermissions = null;
+  /**
+   * @var array
+   */
+  public $airavataAppCatalogPermissions = null;
+  /**
+   * @var string
+   */
+  public $signature = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'airavataAPIPermissions',
+          'type' => TType::MAP,
+          'ktype' => TType::STRING,
+          'vtype' => TType::BOOL,
+          'key' => array(
+            'type' => TType::STRING,
+          ),
+          'val' => array(
+            'type' => TType::BOOL,
+            ),
+          ),
+        2 => array(
+          'var' => 'airavataAppCatalogPermissions',
+          'type' => TType::MAP,
+          'ktype' => TType::STRING,
+          'vtype' => TType::BOOL,
+          'key' => array(
+            'type' => TType::STRING,
+          ),
+          'val' => array(
+            'type' => TType::BOOL,
+            ),
+          ),
+        3 => array(
+          'var' => 'signature',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['airavataAPIPermissions'])) {
+        $this->airavataAPIPermissions = $vals['airavataAPIPermissions'];
+      }
+      if (isset($vals['airavataAppCatalogPermissions'])) {
+        $this->airavataAppCatalogPermissions = $vals['airavataAppCatalogPermissions'];
+      }
+      if (isset($vals['signature'])) {
+        $this->signature = $vals['signature'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'APIPermissions';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::MAP) {
+            $this->airavataAPIPermissions = array();
+            $_size0 = 0;
+            $_ktype1 = 0;
+            $_vtype2 = 0;
+            $xfer += $input->readMapBegin($_ktype1, $_vtype2, $_size0);
+            for ($_i4 = 0; $_i4 < $_size0; ++$_i4)
+            {
+              $key5 = '';
+              $val6 = false;
+              $xfer += $input->readString($key5);
+              $xfer += $input->readBool($val6);
+              $this->airavataAPIPermissions[$key5] = $val6;
+            }
+            $xfer += $input->readMapEnd();
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::MAP) {
+            $this->airavataAppCatalogPermissions = array();
+            $_size7 = 0;
+            $_ktype8 = 0;
+            $_vtype9 = 0;
+            $xfer += $input->readMapBegin($_ktype8, $_vtype9, $_size7);
+            for ($_i11 = 0; $_i11 < $_size7; ++$_i11)
+            {
+              $key12 = '';
+              $val13 = false;
+              $xfer += $input->readString($key12);
+              $xfer += $input->readBool($val13);
+              $this->airavataAppCatalogPermissions[$key12] = $val13;
+            }
+            $xfer += $input->readMapEnd();
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->signature);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('APIPermissions');
+    if ($this->airavataAPIPermissions !== null) {
+      if (!is_array($this->airavataAPIPermissions)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('airavataAPIPermissions', TType::MAP, 1);
+      {
+        $output->writeMapBegin(TType::STRING, TType::BOOL, count($this->airavataAPIPermissions));
+        {
+          foreach ($this->airavataAPIPermissions as $kiter14 => $viter15)
+          {
+            $xfer += $output->writeString($kiter14);
+            $xfer += $output->writeBool($viter15);
+          }
+        }
+        $output->writeMapEnd();
+      }
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->airavataAppCatalogPermissions !== null) {
+      if (!is_array($this->airavataAppCatalogPermissions)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('airavataAppCatalogPermissions', TType::MAP, 2);
+      {
+        $output->writeMapBegin(TType::STRING, TType::BOOL, count($this->airavataAppCatalogPermissions));
+        {
+          foreach ($this->airavataAppCatalogPermissions as $kiter16 => $viter17)
+          {
+            $xfer += $output->writeString($kiter16);
+            $xfer += $output->writeBool($viter17);
+          }
+        }
+        $output->writeMapEnd();
+      }
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->signature !== null) {
+      $xfer += $output->writeFieldBegin('signature', TType::STRING, 3);
+      $xfer += $output->writeString($this->signature);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

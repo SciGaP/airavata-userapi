@@ -20,8 +20,13 @@ require_once $GLOBALS['THRIFT_ROOT'] . 'StringFunc/Core.php';
 
 $GLOBALS['AIRAVATA_ROOT'] = '../lib/Airavata/';
 require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/UserAPI.php';
-require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/UserAPI.php';
+require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/Types.php';
+require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/Models/Types.php';
 
+
+use Airavata\UserAPI\Models\AuthenticationResponse;
+use Airavata\UserAPI\Models\APIPermissions;
+use Airavata\UserAPI\Models\UserProfile;
 use Airavata\UserAPI\Error\UserAPISystemException;
 use Airavata\UserAPI\Error\InvalidRequestException;
 use Airavata\UserAPI\Error\AuthorizationException;
@@ -44,12 +49,12 @@ $client = new UserAPIClient($protocol);
 
 try
 {
-    $token = $client->adminLogin($userapiconfig['ADMIN_USERNAME'],$userapiconfig['ADMIN_PASSWORD']);
+    $token = $client->authenticateGateway($userapiconfig['ADMIN_USERNAME'],$userapiconfig['ADMIN_PASSWORD']);
     if($token !== null){
-        if($client->checkUsernameExists("supun", $token)){
-            print "Username \"supun\" already exists" . "\n";
+        if($client->checkUsernameExists("test_user", $token->accessToken)){
+            print "Username \"test_user\" already exists" . "\n";
         }else{
-            print "Username \"supun\" doesn\'t exists" . "\n";
+            print "Username \"test_user\" doesn't exists" . "\n";
         }
 
     }else{

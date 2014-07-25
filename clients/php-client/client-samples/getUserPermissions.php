@@ -23,6 +23,10 @@ require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/UserAPI.php';
 require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/Types.php';
 require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/Models/Types.php';
 
+use Airavata\UserAPI\Models\AuthenticationResponse;
+use Airavata\UserAPI\Models\APIPermissions;
+use Airavata\UserAPI\Models\UserProfile;
+
 use Airavata\UserAPI\Error\UserAPISystemException;
 use Airavata\UserAPI\Error\InvalidRequestException;
 use Airavata\UserAPI\Error\AuthorizationException;
@@ -34,9 +38,6 @@ use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Transport\TSocket;
 use Airavata\UserAPI\UserAPIClient;
 
-use Airavata\UserAPI\Models\AuthenticationResponse;
-use Airavata\UserAPI\Models\APIPermissions;
-use Airavata\UserAPI\Models\UserProfile;
 $userapiconfig = parse_ini_file("userapi-client-properties.ini");
 
 $transport = new TSocket($userapiconfig['USERAPI_SERVER'], $userapiconfig['USERAPI_PORT']);
@@ -48,16 +49,20 @@ $client = new UserAPIClient($protocol);
 
 try
 {
-    $version = $client->getAPIVersion();
+    $authenticationResponse = $client->authenticateGateway($userapiconfig['ADMIN_USERNAME'],$userapiconfig['ADMIN_PASSWORD']);
+    if($authenticationResponse !== null){
+        $apiPermissions = $client->getUserPermissions("test_user",$authenticationResponse->accessToken);
+        print "Authenticated \"phpTestUser\" user successfully" . "\n";
+        print "-------------------Airavata API permissions-------------------" . "\n";
+        print_r($apiPermissions->airavataAPIPermissions);
+        print "-------------------App Catalog permissions-------------------" . "\n";
+        print_r($apiPermissions->airavataAppCatalogPermissions);
+
+    }else{
+        print "Invalid credential for the Admin" . "\n";
+    }
 }
 catch (TException $texp)
 {
     print "Exception: " . $texp->getMessage()."\n";
 }
-
-
-echo 'Airavata UserAPI server version is ' . $version . "\n";
-
-
-$transport->close();
-?>

@@ -20,7 +20,8 @@ require_once $GLOBALS['THRIFT_ROOT'] . 'StringFunc/Core.php';
 
 $GLOBALS['AIRAVATA_ROOT'] = '../lib/Airavata/';
 require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/UserAPI.php';
-require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/UserAPI.php';
+require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/Types.php';
+require_once $GLOBALS['AIRAVATA_ROOT'] . 'UserAPI/Models/Types.php';
 
 use Airavata\UserAPI\Error\UserAPISystemException;
 use Airavata\UserAPI\Error\InvalidRequestException;
@@ -33,6 +34,10 @@ use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Transport\TSocket;
 use Airavata\UserAPI\UserAPIClient;
 
+use Airavata\UserAPI\Models\AuthenticationResponse;
+use Airavata\UserAPI\Models\APIPermissions;
+use Airavata\UserAPI\Models\UserProfile;
+
 $userapiconfig = parse_ini_file("userapi-client-properties.ini");
 
 $transport = new TSocket($userapiconfig['USERAPI_SERVER'], $userapiconfig['USERAPI_PORT']);
@@ -44,23 +49,22 @@ $client = new UserAPIClient($protocol);
 
 try
 {
-    $token = $client->adminLogin($userapiconfig['ADMIN_USERNAME'],$userapiconfig['ADMIN_PASSWORD']);
-    if($token !== null){
-        $client->addRole("New_Role", $token);
-        print "Created new role \"New_Role\" successfully" . "\n";
+    $authenticationResponse = $client->authenticateGateway($userapiconfig['ADMIN_USERNAME'],$userapiconfig['ADMIN_PASSWORD']);
+    if($authenticationResponse !== null){
 
-        $client->addUserToRole("admin","New_Role", $token);
-        print "Added admin user to role \"New_Role\" successfully" . "\n";
+        $client->addUserToRole("test_user","casual_user", $authenticationResponse->accessToken);
+        print "Added test_user user to role \"casual_user\" successfully" . "\n";
 
-        $roles = $client->getRoleListOfUser("admin", $token);
-        print "Role list of admin user" . "\n";
+        $roles = $client->getRoleListOfUser("test_user", $authenticationResponse->accessToken);
+        print "Role list of test_user user" . "\n";
         var_dump($roles);
 
-        $client->removeUserFromRole("admin","New_Role", $token);
-        print "Remove admin user to role \"New_Role\" successfully" . "\n";
+        $client->removeUserFromRole("test_user","casual_user", $authenticationResponse->accessToken);
+        print "Remove test_user user to role \"casual_user\" successfully" . "\n";
 
-        $client->removeRole("New_Role", $token);
-        print "Removed \"New_Role\" role successfully" . "\n";
+        $roles = $client->getRoleListOfUser("test_user", $authenticationResponse->accessToken);
+        print "Role list of test_user user" . "\n";
+        var_dump($roles);
     }else{
         print "Invalid credential for the Admin" . "\n";
     }
