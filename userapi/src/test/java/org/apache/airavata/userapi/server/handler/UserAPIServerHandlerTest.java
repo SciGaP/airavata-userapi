@@ -149,7 +149,7 @@ public class UserAPIServerHandlerTest extends TestCase {
 
     public void testCheckPermissionString() throws Exception{
         testAdminLogin();
-        boolean temp = userAPIServerHandler.checkPermission("scnakandala","airavata-api/get_api_version", token);
+        boolean temp = userAPIServerHandler.checkPermission("scnakandala","airavata-api/create_project", token);
         Assert.assertTrue(temp);
     }
 

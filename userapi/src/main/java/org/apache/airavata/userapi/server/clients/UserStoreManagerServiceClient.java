@@ -304,7 +304,15 @@ public class UserStoreManagerServiceClient extends BaseServiceClient {
 
     public List<String> getRoleListOfUser(String username, String token) throws AuthorizationException, RemoteException, UserStoreExceptionException {
         authenticateStubFromToken(token);
-        return Arrays.asList(((RemoteUserStoreManagerServiceStub) serviceStub).getRoleListOfUser(username));
+        List<String> temp = Arrays.asList(((RemoteUserStoreManagerServiceStub) serviceStub).getRoleListOfUser(username));
+        List<String> result = new ArrayList<String>();
+        for(int i=0;i<temp.size();i++){
+            if(temp.get(i).equals(ADMIN_ROLE) || temp.get(i).startsWith(INTERNAL_ROLE_PREFIX)){
+                continue;
+            }
+            result.add(temp.get(i));
+        }
+        return result;
     }
 
     public void addRole(String roleName, String token) throws AuthorizationException, RemoteException, UserStoreExceptionException {
