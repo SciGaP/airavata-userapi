@@ -91,12 +91,12 @@ public class UserAPIServerHandlerTest extends TestCase {
         testAdminLogin();
         boolean exceptionThrown = false;
         UserProfile userProfile = new UserProfile();
-        userProfile.firstName = "admin";
-        userProfile.lastName = "admin";
-        userProfile.emailAddress = "admin@phprg.scigap.org";
+        userProfile.firstName = "test_user";
+        userProfile.lastName = "test_user";
+        userProfile.emailAddress = "test_user@phprg.scigap.org";
 
         try{
-            userAPIServerHandler.updateUserProfile("admin", userProfile, token);
+            userAPIServerHandler.updateUserProfile("test_user", userProfile, token);
         }catch (Exception ex){
             exceptionThrown = true;
         }
@@ -106,7 +106,7 @@ public class UserAPIServerHandlerTest extends TestCase {
 
     public void testGetUserProfile() throws Exception{
         testAdminLogin();
-        UserProfile profile = userAPIServerHandler.getUserProfile("admin", token);
+        UserProfile profile = userAPIServerHandler.getUserProfile("test_user", token);
         Assert.assertNotNull(profile);
     }
 
@@ -124,10 +124,9 @@ public class UserAPIServerHandlerTest extends TestCase {
 
     public void testUpdateUserPassword() throws Exception {
         testAdminLogin();
-        testCreateNewUser();
         boolean exceptionThrown = false;
         try{
-            userAPIServerHandler.updateUserPassword("testuser", "abc456", "abc123", token);
+            userAPIServerHandler.updateUserPassword("test_user", "test_user", "test_user", token);
             testRemoveUser();
         }catch (Exception ex){
             exceptionThrown = true;
@@ -137,7 +136,7 @@ public class UserAPIServerHandlerTest extends TestCase {
 
     public void testAuthenticateUser() throws Exception {
         testAdminLogin();
-        APIPermissions apiPermissions = userAPIServerHandler.authenticateUser("scnakandala","nimbus2000",token);
+        APIPermissions apiPermissions = userAPIServerHandler.authenticateUser("test_user","test_user",token);
         Assert.assertNotNull(apiPermissions);
     }
 
@@ -149,8 +148,8 @@ public class UserAPIServerHandlerTest extends TestCase {
 
     public void testCheckPermissionString() throws Exception{
         testAdminLogin();
-        boolean temp = userAPIServerHandler.checkPermission("scnakandala","airavata-api/create_project", token);
-        Assert.assertTrue(temp);
+        boolean temp = userAPIServerHandler.checkPermission("test_user","airavata-api/create_project", token);
+        Assert.assertFalse(temp);
     }
 
     public void testGetUserPermissions() throws  Exception{
