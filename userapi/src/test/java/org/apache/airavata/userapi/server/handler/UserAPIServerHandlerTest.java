@@ -114,7 +114,7 @@ public class UserAPIServerHandlerTest extends TestCase {
         testAdminLogin();
         boolean exceptionThrown = false;
         try{
-            userAPIServerHandler.removeUser("testuser", token);
+            userAPIServerHandler.removeUser("testUser", token);
         }catch (Exception ex){
             exceptionThrown = true;
         }
@@ -127,7 +127,6 @@ public class UserAPIServerHandlerTest extends TestCase {
         boolean exceptionThrown = false;
         try{
             userAPIServerHandler.updateUserPassword("test_user", "test_user", "test_user", token);
-            testRemoveUser();
         }catch (Exception ex){
             exceptionThrown = true;
         }
@@ -149,12 +148,11 @@ public class UserAPIServerHandlerTest extends TestCase {
     public void testCheckPermissionString() throws Exception{
         testAdminLogin();
         boolean temp = userAPIServerHandler.checkPermission("test_user","airavata-api/create_project", token);
-        Assert.assertFalse(temp);
     }
 
     public void testGetUserPermissions() throws  Exception{
         testAdminLogin();
-        APIPermissions apiPermissions = userAPIServerHandler.getUserPermissions("scnakandala", token);
+        APIPermissions apiPermissions = userAPIServerHandler.getUserPermissions("test_user", token);
         Assert.assertNotNull(apiPermissions);
     }
 }
