@@ -35,7 +35,7 @@ public class UserAPIServerHandlerTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        this.userAPIServerHandler = new UserAPIServerHandler("https://idp.scigap.org:7443");
+        this.userAPIServerHandler = new UserAPIServerHandler("https://idp.scigap.org:9443");
     }
 
     public void tearDown() throws Exception {
@@ -45,9 +45,10 @@ public class UserAPIServerHandlerTest extends TestCase {
     public void testGetAPIVersion() throws Exception {
         Assert.assertEquals("0.12.0",userAPIServerHandler.getAPIVersion());
     }
-/*
+
     public void testAdminLogin() throws Exception {
-        AuthenticationResponse authenticationResponse = userAPIServerHandler.authenticateGateway("","");
+        AuthenticationResponse authenticationResponse = userAPIServerHandler.authenticateGateway("" +
+                "","");
         Assert.assertNotNull(authenticationResponse);
         this.token = authenticationResponse.accessToken;
     }
@@ -155,5 +156,5 @@ public class UserAPIServerHandlerTest extends TestCase {
         APIPermissions apiPermissions = userAPIServerHandler.getUserPermissions("test_user", token);
         Assert.assertNotNull(apiPermissions);
     }
-*/
+
 }
