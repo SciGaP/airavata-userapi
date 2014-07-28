@@ -45,9 +45,9 @@ public class UserAPIServerHandlerTest extends TestCase {
     public void testGetAPIVersion() throws Exception {
         Assert.assertEquals("0.12.0",userAPIServerHandler.getAPIVersion());
     }
-
+/*
     public void testAdminLogin() throws Exception {
-        AuthenticationResponse authenticationResponse = userAPIServerHandler.authenticateGateway("admin@phprg.scigap.org","phprg9067@min");
+        AuthenticationResponse authenticationResponse = userAPIServerHandler.authenticateGateway("","");
         Assert.assertNotNull(authenticationResponse);
         this.token = authenticationResponse.accessToken;
     }
@@ -155,4 +155,5 @@ public class UserAPIServerHandlerTest extends TestCase {
         APIPermissions apiPermissions = userAPIServerHandler.getUserPermissions("test_user", token);
         Assert.assertNotNull(apiPermissions);
     }
+*/
 }
