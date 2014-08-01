@@ -26,16 +26,20 @@ import junit.framework.TestCase;
 import org.apache.airavata.userapi.models.APIPermissions;
 import org.apache.airavata.userapi.models.AuthenticationResponse;
 import org.apache.airavata.userapi.models.UserProfile;
+import org.apache.airavata.userapi.server.TestConstants;
+import org.apache.airavata.userapi.server.TestProperties;
 
 import java.util.List;
 
 public class UserAPIServerHandlerTest extends TestCase {
     private UserAPIServerHandler userAPIServerHandler;
     private String token;
+    private TestProperties properties;
 
     public void setUp() throws Exception {
         super.setUp();
-        this.userAPIServerHandler = new UserAPIServerHandler("https://idp.scigap.org:9443");
+        properties = TestProperties.getInstance();
+        this.userAPIServerHandler = new UserAPIServerHandler(properties.getProperty(TestConstants.WSO2_IS_URL,""));
     }
 
     public void tearDown() throws Exception {
@@ -47,8 +51,8 @@ public class UserAPIServerHandlerTest extends TestCase {
     }
 
     public void testAdminLogin() throws Exception {
-        AuthenticationResponse authenticationResponse = userAPIServerHandler.authenticateGateway("" +
-                "","");
+        AuthenticationResponse authenticationResponse = userAPIServerHandler.authenticateGateway(properties.getProperty(TestConstants.TEST_ADMIN_USERNAME,"")
+                ,properties.getProperty(TestConstants.TEST_ADMIN_PASSWORD,""));
         Assert.assertNotNull(authenticationResponse);
         this.token = authenticationResponse.accessToken;
     }

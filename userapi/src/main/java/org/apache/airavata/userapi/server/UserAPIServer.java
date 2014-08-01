@@ -23,7 +23,6 @@ package org.apache.airavata.userapi.server;
 
 import org.apache.airavata.userapi.UserAPI;
 import org.apache.airavata.userapi.common.utils.Constants;
-import org.apache.airavata.userapi.common.utils.IServer;
 import org.apache.airavata.userapi.common.utils.ServerProperties;
 import org.apache.airavata.userapi.error.UserAPIErrorType;
 import org.apache.airavata.userapi.error.UserAPISystemException;
