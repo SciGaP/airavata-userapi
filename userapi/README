@@ -1,0 +1,35 @@
+Apache Airavata Source - README.txt
+Licensed under Apache License 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+--------------------------------------------------------------------------------
+
+
+Prerequisites
+-------------
+Java 1.6 or later
+Maven (tested on v 3.0.2)
+
+Build User API from Source
+---------------------------------
+* Unzip/untar the source file or check out from git
+* cd to project folder and type
+	$ mvn clean install
+	Note: in order to skip tests use the command
+			$ mvn clean install -Dmaven.test.skip=true
+* Alternatively, all  compressed binary distributions can be found at <PROJECT DIR>/target/
+
+Running Tests
+-------------
+* Unit tests & integrations tests will run while Apache Airavata User API is built from source (without "-Dmaven.test.skip=true").
+
+
+Installing the Airavata User API Server
+------------------------------
+No installation is necessary. Just extract the compressed distribution.
+
+Starting Apache Airavata User API Server
+-------------------------------
+* extract airavata-userapi.bin.zip and navigate to <AIRAVATA_USER_API_HOME>/bin
+* type for following command to start the Airavata User API Server
+	MAC/Unix systems
+		$ ./userapi-server.sh
+	Note: Pass "-h" as parameters to see more options when starting the server

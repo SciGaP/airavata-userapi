@@ -18,22 +18,48 @@
 # under the License.
 # Get standard environment variables
 
+# Get standard environment variables
+# if JAVA_HOME is not set we're not happy
 if [ -z "$JAVA_HOME" ]; then
   echo "You must set the JAVA_HOME variable before running User API Scripts."
   exit 1
 fi
 
-SCRIPT=`readlink -f $0`
-# Absolute path this script is in, thus /home/user/bin
-SCRIPTPATH=`dirname $SCRIPT`
-USERAPI_HOME=`dirname $SCRIPTPATH`
+# OS specific support.  $var _must_ be set to either true or false.
+cygwin=false
+os400=false
+case "`uname`" in
+CYGWIN*) cygwin=true;;
+OS400*) os400=true;;
+esac
+
+# resolve links - $0 may be a softlink
+PRG="$0"
+
+while [ -h "$PRG" ]; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '.*/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`/"$link"
+  fi
+done
+
+PRGDIR=`dirname "$PRG"`
+
+# Only set USERAPI_HOME if not already set
+[ -z "$USERAPI_HOME" ] && USERAPI_HOME=`cd "$PRGDIR/.." ; pwd`
 
 USERAPI_CLASSPATH=""
 
+
+
 for f in "$USERAPI_HOME"/lib/*.jar
 do
-  METCAT_CLASSPATH="$USERAPI_CLASSPATH":$f
+  USERAPI_CLASSPATH="$USERAPI_CLASSPATH":$f
 done
 
 export USERAPI_HOME
 export USERAPI_CLASSPATH
+
