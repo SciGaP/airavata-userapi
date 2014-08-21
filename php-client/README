@@ -1,0 +1,14 @@
+Apache Airavata User API php client samples - README.txt
+Licensed under Apache License 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+--------------------------------------------------------------------------------
+
+
+Prerequisites
+-------------
+PHP 5.3 or higher is recomended
+
+Running Tests
+-------------
+* necessary configuration has to be done in the userapi-client-properties.ini file
+* test scripts can be run via the terminal. e.g. $ php addRoleToUser.php
+
