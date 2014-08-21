@@ -8,11 +8,11 @@ This code was developed as a product of the Google Summer of Code 2014 program. 
 Structure
 =========
 
- --------clients\n
- |         |\n
- |          --php-client\n
- |\n
- --------userapi\n
+ --------clients<br>
+ |         |<br>
+ |          --php-client<br>
+ |<br>
+ --------userapi<br>
  
  
  For more information refer the README files inside each sub directory.
